@@ -1,0 +1,140 @@
+# --------------------------------------------------------------------------------------
+#                               ** MODELS **
+# --------------------------------------------------------------------------------------
+
+models:
+  User:
+    name: string:35
+    surname1: string:35
+    surname2: string:35
+    email: string
+    password: string
+    fecha_nacimiento: date
+    profile_image: string
+    nacionalidad: string
+    puntos: integer
+    relationships:
+      hasMany: Comentario, MeGusta, Calificación, Favorito, Entrada
+      belongToMany: Evento, Rol, Logro, Sublogro, *Dirección, Obra
+
+  Obra:
+    titulo: string
+    tipo: enum:Escultura,Mural,Pintura
+    fecha_creacion: date
+    imagen_principal: string
+    latitud: decimal:10:8
+    longitud: decimal:11:8
+    significado: text
+    relationships:
+      hasMany: Comentario, MeGusta, Calificación, Favorito, Entrada
+      belongToMany: Evento, Rol, Logro, Sublogro, *Dirección, Obr9
+
+  Coment:
+    contenido: text
+    relationships:
+      belongsTo: Obra, MeGusta, Entrada
+
+  Address:
+    direccion: string
+    ciudad: string
+    cp: string:5
+    provincia: string
+    pais: string
+    calle: string
+    piso_bloque_edificio: string
+    relationships:
+      morphTo: addressable
+
+  Logro:
+    titulo: string
+    descripcion: text
+    estado: enum:pendiente,en_curso,completado
+    tiempo: datetime
+    relationships:
+      hasMany: SubLogro
+      belongsTo: User
+
+  Evento:
+    titulo: string
+    descripcion: text
+    max_inscritos: integer
+    tipo_usuario: enum:creador,inscrito
+    relationships:
+      belongToMany: Ruta
+      morphToMany: User
+
+  Ruta:
+    nombre: string
+    ciudad: string
+    distancia: float
+    tiempo: time
+    puntos_interés: string
+    estado: enum:prevista,comenzada,terminada
+    relationships:
+      belongToMany: obra, evento
+
+  Patrocinador:
+    nombre: string
+    codigo_patrocinador: string
+    punto_de_interés: string
+    calificación: enum:1,2,3,4,5
+
+  Imagen:
+    url: string
+    tipo: enum:EntradaBlog,Obra
+    relationships:
+      morphTo: imageable
+
+  QR:
+    ruta: string
+    imagen: string
+    relationships:
+      morphTo: qrable
+
+  EntradaBlog:
+    título: string
+    contenido: text
+    descripción: text
+    imagen_principal: string
+    relationships:
+      morphToMany: Etiqueta
+
+  Etiqueta:
+    nombre: string
+    relationships:
+      morphToMany: EntradaBlog
+
+  MeGusta:
+    tipo: enum:Comentarios,EntradaBlog
+    relationships:
+      morphTo: likable
+
+# --------------------------------------------------------------------------------------
+#                               ** SEEDERS **
+# --------------------------------------------------------------------------------------
+
+seeders: Usuario, Obra, Comentario, Dirección, Logro, Evento, Ruta, Patrocinador, Imagen, QR, EntradaBlog, Etiqueta, MeGusta
+
+# --------------------------------------------------------------------------------------
+#                               ** CONTROLLERS **
+# --------------------------------------------------------------------------------------
+
+controllers:
+  Api\UsuarioController:
+    index:
+      query: all
+      respond: 200
+    store:
+      validate: nombre, contraseña, email
+      save: Usuario
+      respond: 201
+    show:
+      respond: 200
+    update:
+      update: Usuario
+      respond: 200
+    destroy:
+      delete: Usuario
+      respond: 204
+    error:
+      respond: 400
