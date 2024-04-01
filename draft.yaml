@@ -76,7 +76,7 @@ models:
       belongsTo: Logro
       belongsToMany: User
 
-  Evento:
+  Event:
     titulo: string
     descripcion: text
     max_inscritos: integer
