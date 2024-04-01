@@ -41,11 +41,6 @@ models:
       belongsTo: User
       morphTo: Comentable
 
-  Favorito:
-    relationships:
-      morphTo: Favoritable
-      belongsTo: User
-
   Direccion:
     direccion: string
     ciudad: string
@@ -98,9 +93,9 @@ models:
       hasMany: Calificacion, Parada
 
   Parada:
-  relationships:
-    belongsTo: Ruta
-    morphTo: Paradable
+    relationships:
+      belongsTo: Ruta
+      morphTo: Paradable
 
   Patrocinador:
     nombre: string
@@ -133,6 +128,7 @@ models:
     relationships:
       morphToMany: Etiqueta, Favorito
       morphMany: Comentario
+      belongsToMany: Categoria
 
   Etiqueta:
     nombre: string
@@ -144,6 +140,22 @@ models:
     relationships:
       morphTo: Likeable
 
+  Autor:
+    nombre: string:35
+
+  Categoria:
+    nombre: string:35
+    relationships: belongsToMany:EntradaBlog
+
+  Rol:
+    nombre: string:35
+    relationships:
+      belongsToMany: Permiso
+
+  Permiso:
+    nombre: string:35
+    relationships:
+      belongsToMany: Rol
 # --------------------------------------------------------------------------------------
 #                               ** SEEDERS **
 # --------------------------------------------------------------------------------------
