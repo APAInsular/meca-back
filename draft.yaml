@@ -1,5 +1,5 @@
 models:
-  User:
+  Usuario:
     name: string:35
     surname1: string:35
     surname2: string:35
@@ -11,7 +11,7 @@ models:
     puntos: integer
     relationships:
       hasMany: Comentario, MeGusta, Calificación, Entrada, Favorito
-      belongsToMany: Evento, Rol, Logro, Sublogro, Dirección, Obra
+      belongsToMany: Evento, Rol, Logro, Sublogro, Dirección,Obra, Ruta
 
   Obra:
     titulo: string
@@ -33,7 +33,7 @@ models:
     relationships:
       hasMany: Obra
 
-  Coment:
+  Comentario:
     contenido: text
     imagen_principal: url
     relationships:
@@ -41,7 +41,7 @@ models:
       belongsTo: User
       morphTo: Comentable
 
-  Address:
+  Direccion:
     direccion: string
     ciudad: string
     cp: string:5
@@ -71,7 +71,7 @@ models:
       belongsTo: Logro
       belongsToMany: User
 
-  Event:
+  Evento:
     titulo: string
     descripcion: text
     max_inscritos: integer
@@ -88,7 +88,7 @@ models:
     estado: enum:pendiente,comenzada,completada
     relationships:
     morphToMany:
-      belongsToMany: Obra, Evento
+      belongsToMany: Obra, Evento, User
       morphToMany: Favorito
       hasMany: Calificacion, Parada
 
@@ -104,7 +104,7 @@ models:
     relationships:
       morphMany: Parada
 
-  Image:
+  Imagen:
     url: string
     tipo: enum:EntradaBlog,Obra
     relationships:
@@ -142,6 +142,8 @@ models:
 
   Autor:
     nombre: string:35
+    relationships:
+      belongsToMany: Obra
 
   Categoria:
     nombre: string:35
@@ -160,7 +162,7 @@ models:
 #                               ** SEEDERS **
 # --------------------------------------------------------------------------------------
 
-seeders: Usuario, Obra, Comentario, Dirección, Logro, Evento, Ruta, Patrocinador, Imagen, QR, EntradaBlog, Etiqueta, MeGusta
+seeders: Usuario, Obra, Comentario, Direccion, Logro, SubLogro, Evento, Ruta, Patrocinador, Parada, Calificacion, Imagen, QR, EntradaBlog, Etiqueta, MeGusta, Autor, Categoria, Rol, Permiso, Estilo
 
 # --------------------------------------------------------------------------------------
 #                               ** CONTROLLERS **
