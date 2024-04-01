@@ -1,7 +1,3 @@
-# --------------------------------------------------------------------------------------
-#                               ** MODELS **
-# --------------------------------------------------------------------------------------
-
 models:
   User:
     name: string:35
@@ -14,8 +10,8 @@ models:
     nacionalidad: string
     puntos: integer
     relationships:
-      hasMany: Comentario, MeGusta, Calificación, Favorito, Entrada
-      belongToMany: Evento, Rol, Logro, Sublogro, *Dirección, Obra
+      hasMany: Comentario, MeGusta, Calificación, Entrada, Favorito
+      belongsToMany: Evento, Rol, Logro, Sublogro, Dirección, Obra
 
   Obra:
     titulo: string
@@ -26,13 +22,29 @@ models:
     longitud: decimal:11:8
     significado: text
     relationships:
-      hasMany: Comentario, MeGusta, Calificación, Favorito, Entrada
-      belongToMany: Evento, Rol, Logro, Sublogro, *Dirección, Obr9
+      hasOne: QR, Direccion
+      belongsToMany: Autor, Ruta, User
+      morphToMany: Favorito
+      morphMany: Comentario, Parada, Image, Calificacion
+      belongsTo: Estilo
+
+  Estilo:
+    nombre: string:35
+    relationships:
+      hasMany: Obra
 
   Coment:
     contenido: text
+    imagen_principal: url
     relationships:
-      belongsTo: Obra, MeGusta, Entrada
+      morphMany: MeGusta
+      belongsTo: User
+      morphTo: Comentable
+
+  Favorito:
+    relationships:
+      morphTo: Favoritable
+      belongsTo: User
 
   Address:
     direccion: string
@@ -43,7 +55,8 @@ models:
     calle: string
     piso_bloque_edificio: string
     relationships:
-      morphTo: addressable
+      belongsTo: Obra
+      belongsToMany: User
 
   Logro:
     titulo: string
@@ -52,44 +65,65 @@ models:
     tiempo: datetime
     relationships:
       hasMany: SubLogro
-      belongsTo: User
+      belongsToMany: User
+
+  SubLogro:
+    titulo: string
+    descripcion: text
+    estado: enum:pendiente,en_curso,completado
+    tiempo: datetime
+    relationships:
+      belongsTo: Logro
+      belongsToMany: User
 
   Evento:
     titulo: string
     descripcion: text
     max_inscritos: integer
-    tipo_usuario: enum:creador,inscrito
+    tipo_usuario: enum:creador,participante
     relationships:
-      belongToMany: Ruta
-      morphToMany: User
+      belongsToMany: Ruta, User
+      hasMany: Calificacion
 
   Ruta:
     nombre: string
     ciudad: string
     distancia: float
     tiempo: time
-    puntos_interés: string
-    estado: enum:prevista,comenzada,terminada
+    estado: enum:pendiente,comenzada,completada
     relationships:
-      belongToMany: obra, evento
+    morphToMany:
+      belongsToMany: Obra, Evento
+      morphToMany: Favorito
+      hasMany: Calificacion, Parada
+
+  Parada:
+  relationships:
+    belongsTo: Ruta
+    morphTo: Paradable
 
   Patrocinador:
     nombre: string
     codigo_patrocinador: string
     punto_de_interés: string
-    calificación: enum:1,2,3,4,5
+    relationships:
+      morphMany: Parada
 
-  Imagen:
+  Image:
     url: string
     tipo: enum:EntradaBlog,Obra
     relationships:
-      morphTo: imageable
+      morphTo: Imageable
+
+  Calificacion:
+    calificación: enum:1,2,3,4,5
+    relationships:
+      morphTo: Obra, Evento, Ruta, EntradaBlog
 
   QR:
     ruta: string
     imagen: string
     relationships:
-      morphTo: qrable
 
   EntradaBlog:
     título: string
@@ -97,7 +131,8 @@ models:
     descripción: text
     imagen_principal: string
     relationships:
-      morphToMany: Etiqueta
+      morphToMany: Etiqueta, Favorito
+      morphMany: Comentario
 
   Etiqueta:
     nombre: string
@@ -107,7 +142,7 @@ models:
   MeGusta:
     tipo: enum:Comentarios,EntradaBlog
     relationships:
-      morphTo: likable
+      morphTo: Likeable
 
 # --------------------------------------------------------------------------------------
 #                               ** SEEDERS **
@@ -120,7 +155,7 @@ seeders: Usuario, Obra, Comentario, Dirección, Logro, Evento, Ruta, Patrocinado
 # --------------------------------------------------------------------------------------
 
 controllers:
-  Api\UsuarioController:
+  Api\UserController:
     index:
       query: all
       respond: 200
