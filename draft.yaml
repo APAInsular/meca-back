@@ -71,7 +71,7 @@ models:
     puntos_interés: string
     estado: enum:prevista,comenzada,terminada
     relationships:
-      belongToMany: obra, evento
+      belongToMany: obra, evento, patrocinador, oYav9r8t0
 
   Patrocinador:
     nombre: string
