@@ -1,0 +1,165 @@
+created:
+    - app/Http/Controllers/Api/ObraController.php
+    - app/Http/Controllers/Api/EntradaBlogController.php
+    - app/Http/Controllers/Api/EstiloController.php
+    - app/Http/Controllers/Api/ComentarioController.php
+    - app/Http/Controllers/Api/DireccionController.php
+    - app/Http/Controllers/Api/LogroController.php
+    - app/Http/Controllers/Api/SubLogroController.php
+    - app/Http/Controllers/Api/EventoController.php
+    - app/Http/Controllers/Api/RutaController.php
+    - app/Http/Controllers/Api/ParadaController.php
+    - app/Http/Controllers/Api/PatrocinadorController.php
+    - app/Http/Controllers/Api/ImagenController.php
+    - app/Http/Controllers/Api/CalificacionController.php
+    - app/Http/Controllers/Api/QRController.php
+    - database/factories/ObraFactory.php
+    - database/factories/EstiloFactory.php
+    - database/factories/ComentarioFactory.php
+    - database/factories/DireccionFactory.php
+    - database/factories/LogroFactory.php
+    - database/factories/SubLogroFactory.php
+    - database/factories/EventoFactory.php
+    - database/factories/RutaFactory.php
+    - database/factories/ParadaFactory.php
+    - database/factories/PatrocinadorFactory.php
+    - database/factories/ImagenFactory.php
+    - database/factories/CalificacionFactory.php
+    - database/factories/QRFactory.php
+    - database/factories/EntradaBlogFactory.php
+    - database/factories/GuardaFactory.php
+    - database/factories/EtiquetaFactory.php
+    - database/factories/MeGustaFactory.php
+    - database/factories/AutorFactory.php
+    - database/factories/CategoriaFactory.php
+    - database/factories/RolFactory.php
+    - database/factories/PermisoFactory.php
+    - database/migrations/2024_04_02_185532_create_obras_table.php
+    - database/migrations/2024_04_02_185533_create_estilos_table.php
+    - database/migrations/2024_04_02_185534_create_comentarios_table.php
+    - database/migrations/2024_04_02_185535_create_direccions_table.php
+    - database/migrations/2024_04_02_185536_create_logros_table.php
+    - database/migrations/2024_04_02_185537_create_sub_logros_table.php
+    - database/migrations/2024_04_02_185538_create_eventos_table.php
+    - database/migrations/2024_04_02_185539_create_rutas_table.php
+    - database/migrations/2024_04_02_185540_create_paradas_table.php
+    - database/migrations/2024_04_02_185541_create_patrocinadors_table.php
+    - database/migrations/2024_04_02_185542_create_imagens_table.php
+    - database/migrations/2024_04_02_185543_create_calificacions_table.php
+    - database/migrations/2024_04_02_185544_create_q_r_s_table.php
+    - database/migrations/2024_04_02_185545_create_entrada_blogs_table.php
+    - database/migrations/2024_04_02_185546_create_guardas_table.php
+    - database/migrations/2024_04_02_185547_create_etiquetas_table.php
+    - database/migrations/2024_04_02_185548_create_me_gustas_table.php
+    - database/migrations/2024_04_02_185549_create_autors_table.php
+    - database/migrations/2024_04_02_185550_create_categorias_table.php
+    - database/migrations/2024_04_02_185551_create_rols_table.php
+    - database/migrations/2024_04_02_185552_create_permisos_table.php
+    - database/migrations/2024_04_02_185553_create_autor_obra_table.php
+    - database/migrations/2024_04_02_185554_create_obra_user_table.php
+    - database/migrations/2024_04_02_185555_create_direccion_user_table.php
+    - database/migrations/2024_04_02_185556_create_logro_user_table.php
+    - database/migrations/2024_04_02_185557_create_sub_logro_user_table.php
+    - database/migrations/2024_04_02_185558_create_evento_ruta_table.php
+    - database/migrations/2024_04_02_185559_create_evento_user_table.php
+    - database/migrations/2024_04_02_185600_create_obra_ruta_table.php
+    - database/migrations/2024_04_02_185601_create_ruta_user_table.php
+    - database/migrations/2024_04_02_185602_create_parada_user_table.php
+    - database/migrations/2024_04_02_185603_create_categoria_entrada_blog_table.php
+    - database/migrations/2024_04_02_185604_create_entrada_blog_etiqueta_table.php
+    - database/migrations/2024_04_02_185605_create_entrada_blog_user_table.php
+    - database/migrations/2024_04_02_185606_create_permiso_rol_table.php
+    - database/migrations/2024_04_02_185607_create_rol_user_table.php
+    - app/Models/Obra.php
+    - app/Models/Estilo.php
+    - app/Models/Comentario.php
+    - app/Models/Direccion.php
+    - app/Models/Logro.php
+    - app/Models/SubLogro.php
+    - app/Models/Evento.php
+    - app/Models/Ruta.php
+    - app/Models/Parada.php
+    - app/Models/Patrocinador.php
+    - app/Models/Imagen.php
+    - app/Models/Calificacion.php
+    - app/Models/QR.php
+    - app/Models/EntradaBlog.php
+    - app/Models/Guarda.php
+    - app/Models/Etiqueta.php
+    - app/Models/MeGusta.php
+    - app/Models/Autor.php
+    - app/Models/Categoria.php
+    - app/Models/Rol.php
+    - app/Models/Permiso.php
+    - database/seeders/ObraSeeder.php
+    - database/seeders/ComentarioSeeder.php
+    - database/seeders/DireccionSeeder.php
+    - database/seeders/LogroSeeder.php
+    - database/seeders/SubLogroSeeder.php
+    - database/seeders/EventoSeeder.php
+    - database/seeders/RutaSeeder.php
+    - database/seeders/PatrocinadorSeeder.php
+    - database/seeders/ParadaSeeder.php
+    - database/seeders/CalificacionSeeder.php
+    - database/seeders/ImagenSeeder.php
+    - database/seeders/QRSeeder.php
+    - database/seeders/EntradaBlogSeeder.php
+    - database/seeders/EtiquetaSeeder.php
+    - database/seeders/MeGustaSeeder.php
+    - database/seeders/AutorSeeder.php
+    - database/seeders/CategoriaSeeder.php
+    - database/seeders/RolSeeder.php
+    - database/seeders/PermisoSeeder.php
+    - database/seeders/EstiloSeeder.php
+    - database/seeders/GuardaSeeder.php
+    - tests/Feature/Http/Controllers/Api/ObraControllerTest.php
+    - tests/Feature/Http/Controllers/Api/EntradaBlogControllerTest.php
+    - tests/Feature/Http/Controllers/Api/EstiloControllerTest.php
+    - tests/Feature/Http/Controllers/Api/ComentarioControllerTest.php
+    - tests/Feature/Http/Controllers/Api/DireccionControllerTest.php
+    - tests/Feature/Http/Controllers/Api/LogroControllerTest.php
+    - tests/Feature/Http/Controllers/Api/SubLogroControllerTest.php
+    - tests/Feature/Http/Controllers/Api/EventoControllerTest.php
+    - tests/Feature/Http/Controllers/Api/RutaControllerTest.php
+    - tests/Feature/Http/Controllers/Api/ParadaControllerTest.php
+    - tests/Feature/Http/Controllers/Api/PatrocinadorControllerTest.php
+    - tests/Feature/Http/Controllers/Api/ImagenControllerTest.php
+    - tests/Feature/Http/Controllers/Api/CalificacionControllerTest.php
+    - tests/Feature/Http/Controllers/Api/QRControllerTest.php
+    - app/Http/Requests/Api/ObraStoreRequest.php
+    - app/Http/Requests/Api/EntradaBlogStoreRequest.php
+    - app/Http/Requests/Api/EstiloStoreRequest.php
+    - app/Http/Requests/Api/ComentarioStoreRequest.php
+    - app/Http/Requests/Api/DireccionStoreRequest.php
+    - app/Http/Requests/Api/LogroStoreRequest.php
+    - app/Http/Requests/Api/SubLogroStoreRequest.php
+    - app/Http/Requests/Api/EventoStoreRequest.php
+    - app/Http/Requests/Api/RutumStoreRequest.php
+    - app/Http/Requests/Api/PatrocinadorStoreRequest.php
+    - app/Http/Requests/Api/ImagenStoreRequest.php
+    - app/Http/Requests/Api/CalificacionStoreRequest.php
+    - app/Http/Requests/Api/QRStoreRequest.php
+updated:
+    - routes/web.php
+models:
+    Obra: { titulo: string, tipo: 'enum:Escultura,Mural,Pintura', fecha_creacion: date, imagen_principal: string, latitud: decimal, longitud: decimal, significado: text, relationships: { belongsToMany: 'Autor, User', morphMany: 'Comentario, Parada, Imagen, Calificacion', belongsTo: 'Estilo, QR, Direccion', morphToMany: Guarda } }
+    Estilo: { nombre: string, relationships: { hasMany: Obra } }
+    Comentario: { contenido: text, imagen_principal: url, relationships: { morphMany: MeGusta, belongsTo: User, morphTo: Comentable } }
+    Direccion: { direccion: string, ciudad: string, cp: string, provincia: string, pais: string, calle: string, piso_bloque_edificio: string, relationships: { hasOne: Obra, belongsToMany: User } }
+    Logro: { titulo: string, descripcion: text, estado: 'enum:pendiente,en_curso,completado', tiempo: datetime, relationships: { hasMany: SubLogro, belongsToMany: User } }
+    SubLogro: { titulo: string, descripcion: text, estado: 'enum:pendiente,en_curso,completado', tiempo: datetime, relationships: { belongsTo: Logro, belongsToMany: User } }
+    Evento: { titulo: string, descripcion: text, max_inscritos: integer, tipo_usuario: 'enum:creador,participante', relationships: { belongsToMany: 'Ruta, User', morphMany: Calificacion } }
+    Ruta: { nombre: string, ciudad: string, distancia: float, tiempo: time, estado: 'enum:pendiente,comenzada,completada', relationships: { belongsToMany: 'Obra, Evento, User', hasMany: Parada, morphMany: Calificacion, morphToMany: Guarda } }
+    Parada: { nombre: string, relationships: { belongsTo: Ruta, morphTo: Paradable, belongsToMany: User } }
+    Patrocinador: { nombre: string, codigo_patrocinador: string, punto_de_interés: string, relationships: { morphMany: Parada } }
+    Imagen: { url: string, relationships: { morphTo: Imageable } }
+    Calificacion: { calificación: 'enum:1,2,3,4,5', relationships: { morphTo: Calificable } }
+    QR: { ruta: string, imagen: string, relationships: { hasOne: Obra } }
+    EntradaBlog: { título: string, contenido: text, descripción: text, imagen_principal: string, relationships: { morphMany: 'Comentario, MeGusta, Imagen, Calificacion', belongsToMany: 'Categoria, Etiqueta, User', morphToMany: Guarda } }
+    Guarda: { relationships: { morphTo: Guardable } }
+    Etiqueta: { nombre: string, relationships: { belongsToMany: EntradaBlog } }
+    MeGusta: { relationships: { belongsTo: User, morphTo: Likeable } }
+    Autor: { nombre: string, relationships: { belongsToMany: Obra, morphToMany: Guarda } }
+    Categoria: { nombre: string, relationships: { belongsToMany: EntradaBlog } }
+    Rol: { nombre: string, relationships: { belongsToMany: 'Permiso, User' } }
+    Permiso: { nombre: string, relationships: { belongsToMany: Rol } }
