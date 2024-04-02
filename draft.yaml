@@ -187,3 +187,268 @@ controllers:
       respond: 204
     error:
       respond: 400
+
+  Api\ObraController:
+    index:
+      query: all
+      respond: 200
+    store:
+      validate: titulo, tipo, fecha_creacion, imagen_principal, latitud, longitud, significado
+      save: Obra
+      respond: 201
+    show:
+      respond: 200
+    update:
+      update: Obra
+      respond: 200
+    destroy:
+      delete: Obra
+      respond: 204
+    error:
+      respond: 400
+
+  Api\EntradaBlogController:
+    index:
+      query: all
+      respond: 200
+    store:
+      validate: titulo, tipo, fecha_creacion, imagen_principal, latitud, longitud, significado
+      save: EntradaBlog
+      respond: 201
+    show:
+      respond: 200
+    update:
+      update: EntradaBlog
+      respond: 200
+    destroy:
+      delete: EntradaBlog
+      respond: 204
+    error:
+      respond: 400
+
+  Api\EstiloController:
+    index:
+      query: all
+      respond: 200
+    store:
+      validate: nombre
+      save: Estilo
+      respond: 201
+    show:
+      respond: 200
+    update:
+      update: Estilo
+      respond: 200
+    destroy:
+      delete: Estilo
+      respond: 204
+    error:
+      respond: 400
+
+  Api\ComentarioController:
+    index:
+      query: all
+      respond: 200
+    store:
+      validate: contenido, imagen_principal
+      save: EntradaBlog
+      respond: 201
+    show:
+      respond: 200
+    update:
+      update: Comentario
+      respond: 200
+    destroy:
+      delete: Comentario
+      respond: 204
+    error:
+      respond: 400
+
+  Api\DireccionController:
+    index:
+      query: all
+      respond: 200
+    store:
+      validate: direccion, ciudad, cp, provincia, pais, calle, piso_bloque_edificio
+      save: EntradaBlog
+      respond: 201
+    show:
+      respond: 200
+    update:
+      update: Direccion
+      respond: 200
+    destroy:
+      delete: Direccion
+      respond: 204
+    error:
+      respond: 400
+
+  Api\LogroController:
+    index:
+      query: all
+      respond: 200
+    store:
+      validate: titulo, descripcion, estado, tiempo
+      save: Logro
+      respond: 201
+    show:
+      respond: 200
+    update:
+      update: Logro
+      respond: 200
+    destroy:
+      delete: Logro
+      respond: 204
+    error:
+      respond: 400
+
+  Api\SubLogroController:
+    index:
+      query: all
+      respond: 200
+    store:
+      validate: titulo, descripcion, estado, tiempo
+      save: Logro
+      respond: 201
+    show:
+      respond: 200
+    update:
+      update: Logro
+      respond: 200
+    destroy:
+      delete: Logro
+      respond: 204
+    error:
+      respond: 400
+
+  Api\EventoController:
+    index:
+      query: all
+      respond: 200
+    store:
+      validate: titulo, descripcion, max_inscritos, tipo_usuario
+      save: Evento
+      respond: 201
+    show:
+      respond: 200
+    update:
+      update: Evento
+      respond: 200
+    destroy:
+      delete: Evento
+      respond: 204
+    error:
+      respond: 400
+
+  Api\RutaController:
+    index:
+      query: all
+      respond: 200
+    store:
+      validate: nombre, ciudad, distancia, tiempo, estado
+      save: Ruta
+      respond: 201
+    show:
+      respond: 200
+    update:
+      update: Ruta
+      respond: 200
+    destroy:
+      delete: Ruta
+      respond: 204
+    error:
+      respond: 400
+
+  Api\ParadaController:
+    index:
+      query: all
+      respond: 200
+    store:
+      save: Parada
+      respond: 201
+    show:
+      respond: 200
+    update:
+      update: Parada
+      respond: 200
+    destroy:
+      delete: Parada
+      respond: 204
+    error:
+      respond: 400
+
+  Api\PatrocinadorController:
+    index:
+      query: all
+      respond: 200
+    store:
+      validate: nombre, codigo_patrocinador, punto_de_interés
+      save: Patrocinador
+      respond: 201
+    show:
+      respond: 200
+    update:
+      update: Patrocinador
+      respond: 200
+    destroy:
+      delete: Patrocinador
+      respond: 204
+    error:
+      respond: 400
+
+  Api\ImageController:
+    index:
+      query: all
+      respond: 200
+    store:
+      validate: url, tipo
+      save: Parada
+      respond: 201
+    show:
+      respond: 200
+    update:
+      update: Parada
+      respond: 200
+    destroy:
+      delete: Parada
+      respond: 204
+    error:
+      respond: 400
+
+  Api\CalificacionController:
+    index:
+      query: all
+      respond: 200
+    store:
+      validate: calificación
+      save: Calificacion
+      respond: 201
+    show:
+      respond: 200
+    update:
+      update: Calificacion
+      respond: 200
+    destroy:
+      delete: Calificacion
+      respond: 204
+    error:
+      respond: 400
+
+  Api\QRController:
+    index:
+      query: all
+      respond: 200
+    store:
+      validate: ruta, imagen
+      save: Parada
+      respond: 201
+    show:
+      respond: 200
+    update:
+      update: Parada
+      respond: 200
+    destroy:
+      delete: Parada
+      respond: 204
+    error:
+      respond: 400
