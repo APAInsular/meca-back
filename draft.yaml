@@ -1,17 +1,17 @@
 models:
-  User:
-    name: string
-    surname1: string
-    surname2: string
-    email: string
-    password: string
-    fecha_nacimiento: date
-    profile_image: string
-    nacionalidad: string
-    puntos: integer
-    relationships:
-      hasMany: Comentario, MeGusta, Calificación, EntradaBlog
-      belongsToMany: Evento, Rol, Logro, Sublogro, Dirección, Obra
+  # User:
+  #   name: string
+  #   surname1: string
+  #   surname2: string
+  #   email: string
+  #   password: string
+  #   fecha_nacimiento: date
+  #   profile_image: string
+  #   nacionalidad: string
+  #   puntos: integer
+  #   relationships:
+  #     hasMany: Comentario, MeGusta, Calificación, EntradaBlog
+  #     belongsToMany: Evento, Rol, Logro, Sublogro, Dirección, Obra, Ruta
 
   Obra:
     titulo: string
@@ -87,7 +87,7 @@ models:
     estado: enum:pendiente,comenzada,completada
     relationships:
     morphToMany:
-      belongsToMany: Obra, Evento
+      belongsToMany: Obra, Evento, User
       hasMany: Calificacion, Parada
 
   Parada:
@@ -105,14 +105,13 @@ models:
 
   Imagen:
     url: string
-    tipo: enum:EntradaBlog,Obra
     relationships:
       morphTo: Imageable
 
   Calificacion:
     calificación: enum:1,2,3,4,5
     relationships:
-      morphTo: Obra, Evento, Ruta, EntradaBlog
+      morphTo: Obra, Evento, Ruta, EntradaBlog, Autpr
 
   QR:
     ruta: string
@@ -148,14 +147,13 @@ models:
 
   Categoria:
     nombre: string
-    relationships: 
+    relationships:
       belongsToMany: EntradaBlog
 
   Rol:
     nombre: string
     relationships:
       belongsToMany: Permiso, User
-
 
   Permiso:
     nombre: string
