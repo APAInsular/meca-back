@@ -10,8 +10,9 @@ models:
     nacionalidad: string
     puntos: integer
     relationships:
+      
       hasMany: Comentario, MeGusta, Calificación, EntradaBlog
-      belongsToMany: Evento, Rol, Logro, Sublogro, Dirección, Obra
+      belongsToMany: Evento, Rol, Logro, Sublogro, Dirección, Obra, Ruta
 
   Obra:
     titulo: string
@@ -23,7 +24,7 @@ models:
     significado: text
     relationships:
       hasOne: QR, Direccion
-      belongsToMany: Autor, Ruta, User
+      belongsToMany: Autor, User
       morphMany: Comentario, Parada, Imagen, Calificacion
       belongsTo: Estilo
 
@@ -155,7 +156,6 @@ models:
     nombre: string
     relationships:
       belongsToMany: Permiso, User
-
 
   Permiso:
     nombre: string
