@@ -23,7 +23,7 @@ models:
     significado: text
     relationships:
       hasOne: QR, Direccion
-      belongsToMany: Autor, Ruta, User
+      belongsToMany: Autor, User
       morphMany: Comentario, Parada, Imagen, Calificacion
       belongsTo: Estilo
 
