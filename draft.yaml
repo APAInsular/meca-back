@@ -1,8 +1,8 @@
 models:
   User:
-    name: string:35
-    surname1: string:35
-    surname2: string:35
+    name: string
+    surname1: string
+    surname2: string
     email: string
     password: string
     fecha_nacimiento: date
@@ -10,7 +10,7 @@ models:
     nacionalidad: string
     puntos: integer
     relationships:
-      hasMany: Comentario, MeGusta, Calificación, Entrada, Favorito
+      hasMany: Comentario, MeGusta, Calificación, EntradaBlog
       belongsToMany: Evento, Rol, Logro, Sublogro, Dirección, Obra
 
   Obra:
@@ -18,18 +18,17 @@ models:
     tipo: enum:Escultura,Mural,Pintura
     fecha_creacion: date
     imagen_principal: string
-    latitud: decimal:10:8
-    longitud: decimal:11:8
+    latitud: decimal
+    longitud: decimal
     significado: text
     relationships:
       hasOne: QR, Direccion
       belongsToMany: Autor, Ruta, User
-      morphToMany: Favorito
-      morphMany: Comentario, Parada, Image, Calificacion
+      morphMany: Comentario, Parada, Imagen, Calificacion
       belongsTo: Estilo
 
   Estilo:
-    nombre: string:35
+    nombre: string
     relationships:
       hasMany: Obra
 
@@ -44,7 +43,7 @@ models:
   Direccion:
     direccion: string
     ciudad: string
-    cp: string:5
+    cp: string
     provincia: string
     pais: string
     calle: string
@@ -89,10 +88,10 @@ models:
     relationships:
     morphToMany:
       belongsToMany: Obra, Evento
-      morphToMany: Favorito
       hasMany: Calificacion, Parada
 
   Parada:
+    nombre: string
     relationships:
       belongsTo: Ruta
       morphTo: Paradable
@@ -104,7 +103,7 @@ models:
     relationships:
       morphMany: Parada
 
-  Image:
+  Imagen:
     url: string
     tipo: enum:EntradaBlog,Obra
     relationships:
@@ -119,6 +118,7 @@ models:
     ruta: string
     imagen: string
     relationships:
+      belongsTo: Obra
 
   EntradaBlog:
     título: string
@@ -126,7 +126,7 @@ models:
     descripción: text
     imagen_principal: string
     relationships:
-      morphToMany: Etiqueta, Favorito
+      morphToMany: Etiqueta
       morphMany: Comentario
       belongsToMany: Categoria
 
@@ -141,21 +141,27 @@ models:
       morphTo: Likeable
 
   Autor:
-    nombre: string:35
+    nombre: string
+    relationships:
+      morphMany: Calificacion
+      belongsToMany: Obra
 
   Categoria:
-    nombre: string:35
-    relationships: belongsToMany:EntradaBlog
+    nombre: string
+    relationships: 
+      belongsToMany: EntradaBlog
 
   Rol:
-    nombre: string:35
+    nombre: string
     relationships:
-      belongsToMany: Permiso
+      belongsToMany: Permiso, User
+
 
   Permiso:
-    nombre: string:35
+    nombre: string
     relationships:
       belongsToMany: Rol
+
 # --------------------------------------------------------------------------------------
 #                               ** SEEDERS **
 # --------------------------------------------------------------------------------------
