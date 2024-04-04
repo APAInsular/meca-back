@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class QR extends Model
+class Address extends Model
 {
     use HasFactory;
 
@@ -16,8 +17,13 @@ class QR extends Model
      * @var array
      */
     protected $fillable = [
-        'path',
-        'image',
+        'address',
+        'city',
+        'zip_code',
+        'province',
+        'country',
+        'street',
+        'floor_block_building',
     ];
 
     /**
@@ -32,5 +38,10 @@ class QR extends Model
     public function monument(): HasOne
     {
         return $this->hasOne(Monument::class);
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
     }
 }

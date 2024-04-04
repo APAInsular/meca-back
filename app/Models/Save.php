@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class QR extends Model
+class Save extends Model
 {
     use HasFactory;
 
@@ -15,10 +15,7 @@ class QR extends Model
      *
      * @var array
      */
-    protected $fillable = [
-        'path',
-        'image',
-    ];
+    protected $fillable = [];
 
     /**
      * The attributes that should be cast to native types.
@@ -29,8 +26,8 @@ class QR extends Model
         'id' => 'integer',
     ];
 
-    public function monument(): HasOne
+    public function savable(): MorphTo
     {
-        return $this->hasOne(Monument::class);
+        return $this->morphTo();
     }
 }

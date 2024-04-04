@@ -59,3 +59,46 @@ Route::resource('calificacions', App\Http\Controllers\Api\CalificacionController
 
 Route::get('q-rs/error', [App\Http\Controllers\Api\QRController::class, 'error']);
 Route::resource('q-rs', App\Http\Controllers\Api\QRController::class)->except('create', 'edit');
+
+
+Route::get('monuments/error', [App\Http\Controllers\Api\MonumentController::class, 'error']);
+Route::resource('monuments', App\Http\Controllers\Api\MonumentController::class)->except('create', 'edit');
+
+Route::get('blog-entries/error', [App\Http\Controllers\Api\BlogEntryController::class, 'error']);
+Route::resource('blog-entries', App\Http\Controllers\Api\BlogEntryController::class)->except('create', 'edit');
+
+Route::get('styles/error', [App\Http\Controllers\Api\StyleController::class, 'error']);
+Route::resource('styles', App\Http\Controllers\Api\StyleController::class)->except('create', 'edit');
+
+Route::get('comments/error', [App\Http\Controllers\Api\CommentController::class, 'error']);
+Route::resource('comments', App\Http\Controllers\Api\CommentController::class)->except('create', 'edit');
+
+Route::get('addresses/error', [App\Http\Controllers\Api\AddressController::class, 'error']);
+Route::resource('addresses', App\Http\Controllers\Api\AddressController::class)->except('create', 'edit');
+
+Route::get('achievements/error', [App\Http\Controllers\Api\AchievementController::class, 'error']);
+Route::resource('achievements', App\Http\Controllers\Api\AchievementController::class)->except('create', 'edit');
+
+Route::get('sub-achievements/error', [App\Http\Controllers\Api\SubAchievementController::class, 'error']);
+Route::resource('sub-achievements', App\Http\Controllers\Api\SubAchievementController::class)->except('create', 'edit');
+
+Route::get('events/error', [App\Http\Controllers\Api\EventController::class, 'error']);
+Route::resource('events', App\Http\Controllers\Api\EventController::class)->except('create', 'edit');
+
+Route::get('routes/error', [App\Http\Controllers\Api\RouteController::class, 'error']);
+Route::resource('routes', App\Http\Controllers\Api\RouteController::class)->except('create', 'edit');
+
+Route::get('stops/error', [App\Http\Controllers\Api\StopController::class, 'error']);
+Route::resource('stops', App\Http\Controllers\Api\StopController::class)->except('create', 'edit');
+
+Route::get('sponsors/error', [App\Http\Controllers\Api\SponsorController::class, 'error']);
+Route::resource('sponsors', App\Http\Controllers\Api\SponsorController::class)->except('create', 'edit');
+
+Route::get('images/error', [App\Http\Controllers\Api\ImageController::class, 'error']);
+Route::resource('images', App\Http\Controllers\Api\ImageController::class)->except('create', 'edit');
+
+Route::get('ratings/error', [App\Http\Controllers\Api\RatingController::class, 'error']);
+Route::resource('ratings', App\Http\Controllers\Api\RatingController::class)->except('create', 'edit');
+
+Route::get('q-rs/error', [App\Http\Controllers\Api\QRController::class, 'error']);
+Route::resource('q-rs', App\Http\Controllers\Api\QRController::class)->except('create', 'edit');

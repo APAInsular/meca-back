@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class QR extends Model
+class Tag extends Model
 {
     use HasFactory;
 
@@ -16,8 +16,7 @@ class QR extends Model
      * @var array
      */
     protected $fillable = [
-        'path',
-        'image',
+        'name',
     ];
 
     /**
@@ -29,8 +28,8 @@ class QR extends Model
         'id' => 'integer',
     ];
 
-    public function monument(): HasOne
+    public function blogEntries(): BelongsToMany
     {
-        return $this->hasOne(Monument::class);
+        return $this->belongsToMany(BlogEntry::class);
     }
 }

@@ -4,16 +4,16 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Models\QR;
+use App\Models\BlogEntry;
 
-class QRFactory extends Factory
+class BlogEntryFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = QR::class;
+    protected $model = BlogEntry::class;
 
     /**
      * Define the model's default state.
@@ -21,8 +21,10 @@ class QRFactory extends Factory
     public function definition(): array
     {
         return [
-            'path' => $this->faker->word(),
-            'image' => $this->faker->word(),
+            'title' => $this->faker->sentence(4),
+            'content' => $this->faker->paragraphs(3, true),
+            'description' => $this->faker->text(),
+            'main_image' => $this->faker->word(),
         ];
     }
 }

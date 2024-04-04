@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Http\Controllers\Api;
 
-use App\Models\QR;
+use App\Models\Style;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use JMac\Testing\Traits\AdditionalAssertions;
@@ -10,18 +10,18 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
- * @see \App\Http\Controllers\Api\QRController
+ * @see \App\Http\Controllers\Api\StyleController
  */
-final class QRControllerTest extends TestCase
+final class StyleControllerTest extends TestCase
 {
     use AdditionalAssertions, RefreshDatabase, WithFaker;
 
     #[Test]
     public function index_responds_with(): void
     {
-        $qRs = QR::factory()->count(3)->create();
+        $styles = Style::factory()->count(3)->create();
 
-        $response = $this->get(route('q-rs.index'));
+        $response = $this->get(route('styles.index'));
 
         $response->assertOk();
     }
@@ -31,29 +31,26 @@ final class QRControllerTest extends TestCase
     public function store_uses_form_request_validation(): void
     {
         $this->assertActionUsesFormRequest(
-            \App\Http\Controllers\Api\QRController::class,
+            \App\Http\Controllers\Api\StyleController::class,
             'store',
-            \App\Http\Requests\Api\QRControllerStoreRequest::class
+            \App\Http\Requests\Api\StyleControllerStoreRequest::class
         );
     }
 
     #[Test]
     public function store_saves_and_responds_with(): void
     {
-        $path = $this->faker->word();
-        $image = $this->faker->word();
+        $name = $this->faker->name();
 
-        $response = $this->post(route('q-rs.store'), [
-            'path' => $path,
-            'image' => $image,
+        $response = $this->post(route('styles.store'), [
+            'name' => $name,
         ]);
 
-        $qRs = QR::query()
-            ->where('path', $path)
-            ->where('image', $image)
+        $styles = Style::query()
+            ->where('name', $name)
             ->get();
-        $this->assertCount(1, $qRs);
-        $qR = $qRs->first();
+        $this->assertCount(1, $styles);
+        $style = $styles->first();
 
         $response->assertNoContent(201);
     }
@@ -62,9 +59,9 @@ final class QRControllerTest extends TestCase
     #[Test]
     public function show_responds_with(): void
     {
-        $qR = QR::factory()->create();
+        $style = Style::factory()->create();
 
-        $response = $this->get(route('q-rs.show', $qR));
+        $response = $this->get(route('styles.show', $style));
 
         $response->assertOk();
     }
@@ -73,11 +70,11 @@ final class QRControllerTest extends TestCase
     #[Test]
     public function update_responds_with(): void
     {
-        $qR = QR::factory()->create();
+        $style = Style::factory()->create();
 
-        $response = $this->put(route('q-rs.update', $qR));
+        $response = $this->put(route('styles.update', $style));
 
-        $qR->refresh();
+        $style->refresh();
 
         $response->assertOk();
     }
@@ -86,20 +83,20 @@ final class QRControllerTest extends TestCase
     #[Test]
     public function destroy_deletes_and_responds_with(): void
     {
-        $qR = QR::factory()->create();
+        $style = Style::factory()->create();
 
-        $response = $this->delete(route('q-rs.destroy', $qR));
+        $response = $this->delete(route('styles.destroy', $style));
 
         $response->assertNoContent();
 
-        $this->assertModelMissing($qR);
+        $this->assertModelMissing($style);
     }
 
 
     #[Test]
     public function error_responds_with(): void
     {
-        $response = $this->get(route('q-rs.error'));
+        $response = $this->get(route('styles.error'));
 
         $response->assertNoContent(400);
     }

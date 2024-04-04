@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class QR extends Model
+class Like extends Model
 {
     use HasFactory;
 
@@ -16,8 +17,7 @@ class QR extends Model
      * @var array
      */
     protected $fillable = [
-        'path',
-        'image',
+        'user_id',
     ];
 
     /**
@@ -27,10 +27,16 @@ class QR extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'user_id' => 'integer',
     ];
 
-    public function monument(): HasOne
+    public function user(): BelongsTo
     {
-        return $this->hasOne(Monument::class);
+        return $this->belongsTo(User::class);
+    }
+
+    public function likable(): MorphTo
+    {
+        return $this->morphTo();
     }
 }

@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class QR extends Model
+class Image extends Model
 {
     use HasFactory;
 
@@ -16,8 +16,7 @@ class QR extends Model
      * @var array
      */
     protected $fillable = [
-        'path',
-        'image',
+        'url',
     ];
 
     /**
@@ -29,8 +28,8 @@ class QR extends Model
         'id' => 'integer',
     ];
 
-    public function monument(): HasOne
+    public function imageable(): MorphTo
     {
-        return $this->hasOne(Monument::class);
+        return $this->morphTo();
     }
 }

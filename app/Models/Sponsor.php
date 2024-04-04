@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class QR extends Model
+class Sponsor extends Model
 {
     use HasFactory;
 
@@ -16,8 +16,9 @@ class QR extends Model
      * @var array
      */
     protected $fillable = [
-        'path',
-        'image',
+        'name',
+        'sponsor_code',
+        'point_of_interest',
     ];
 
     /**
@@ -29,8 +30,8 @@ class QR extends Model
         'id' => 'integer',
     ];
 
-    public function monument(): HasOne
+    public function stops(): MorphMany
     {
-        return $this->hasOne(Monument::class);
+        return $this->morphMany(Stop::class, 'stopable');
     }
 }
