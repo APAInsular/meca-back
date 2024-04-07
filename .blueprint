@@ -1,0 +1,184 @@
+created:
+    - app/Http/Controllers/Api/MonumentController.php
+    - app/Http/Controllers/Api/BlogEntryController.php
+    - app/Http/Controllers/Api/StyleController.php
+    - app/Http/Controllers/Api/CommentController.php
+    - app/Http/Controllers/Api/AddressController.php
+    - app/Http/Controllers/Api/AchievementController.php
+    - app/Http/Controllers/Api/SubAchievementController.php
+    - app/Http/Controllers/Api/EventController.php
+    - app/Http/Controllers/Api/RouteController.php
+    - app/Http/Controllers/Api/StopController.php
+    - app/Http/Controllers/Api/SponsorController.php
+    - app/Http/Controllers/Api/ImageController.php
+    - app/Http/Controllers/Api/RatingController.php
+    - app/Http/Controllers/Api/QRController.php
+    - database/factories/MonumentFactory.php
+    - database/factories/StyleFactory.php
+    - database/factories/CommentFactory.php
+    - database/factories/AddressFactory.php
+    - database/factories/AchievementFactory.php
+    - database/factories/SubAchievementFactory.php
+    - database/factories/EventFactory.php
+    - database/factories/RouteFactory.php
+    - database/factories/StopFactory.php
+    - database/factories/SponsorFactory.php
+    - database/factories/ImageFactory.php
+    - database/factories/RatingFactory.php
+    - database/factories/QRFactory.php
+    - database/factories/BlogEntryFactory.php
+    - database/factories/SaveFactory.php
+    - database/factories/TagFactory.php
+    - database/factories/LikeFactory.php
+    - database/factories/AuthorFactory.php
+    - database/factories/CategoryFactory.php
+    - database/factories/RoleFactory.php
+    - database/factories/PermissionFactory.php
+    - database/migrations/2024_04_04_085321_create_monuments_table.php
+    - database/migrations/2024_04_04_085322_create_styles_table.php
+    - database/migrations/2024_04_04_085323_create_comments_table.php
+    - database/migrations/2024_04_04_085324_create_addresses_table.php
+    - database/migrations/2024_04_04_085325_create_achievements_table.php
+    - database/migrations/2024_04_04_085326_create_sub_achievements_table.php
+    - database/migrations/2024_04_04_085327_create_events_table.php
+    - database/migrations/2024_04_04_085328_create_routes_table.php
+    - database/migrations/2024_04_04_085329_create_stops_table.php
+    - database/migrations/2024_04_04_085330_create_sponsors_table.php
+    - database/migrations/2024_04_04_085331_create_images_table.php
+    - database/migrations/2024_04_04_085332_create_ratings_table.php
+    - database/migrations/2024_04_04_085333_create_q_r_s_table.php
+    - database/migrations/2024_04_04_085334_create_blog_entries_table.php
+    - database/migrations/2024_04_04_085335_create_saves_table.php
+    - database/migrations/2024_04_04_085336_create_tags_table.php
+    - database/migrations/2024_04_04_085337_create_likes_table.php
+    - database/migrations/2024_04_04_085338_create_authors_table.php
+    - database/migrations/2024_04_04_085339_create_categories_table.php
+    - database/migrations/2024_04_04_085340_create_roles_table.php
+    - database/migrations/2024_04_04_085341_create_permissions_table.php
+    - database/migrations/2024_04_04_085342_create_author_monument_table.php
+    - database/migrations/2024_04_04_085343_create_monument_user_table.php
+    - database/migrations/2024_04_04_085344_create_address_user_table.php
+    - database/migrations/2024_04_04_085345_create_achievement_user_table.php
+    - database/migrations/2024_04_04_085346_create_sub_achievement_user_table.php
+    - database/migrations/2024_04_04_085347_create_event_route_table.php
+    - database/migrations/2024_04_04_085348_create_event_user_table.php
+    - database/migrations/2024_04_04_085349_create_monument_route_table.php
+    - database/migrations/2024_04_04_085350_create_route_user_table.php
+    - database/migrations/2024_04_04_085351_create_stop_user_table.php
+    - database/migrations/2024_04_04_085352_create_blog_entry_category_table.php
+    - database/migrations/2024_04_04_085353_create_blog_entry_tag_table.php
+    - database/migrations/2024_04_04_085354_create_blog_entry_user_table.php
+    - database/migrations/2024_04_04_085355_create_permission_role_table.php
+    - database/migrations/2024_04_04_085356_create_role_user_table.php
+    - app/Models/Monument.php
+    - app/Models/Style.php
+    - app/Models/Comment.php
+    - app/Models/Address.php
+    - app/Models/Achievement.php
+    - app/Models/SubAchievement.php
+    - app/Models/Event.php
+    - app/Models/Route.php
+    - app/Models/Stop.php
+    - app/Models/Sponsor.php
+    - app/Models/Image.php
+    - app/Models/Rating.php
+    - app/Models/QR.php
+    - app/Models/BlogEntry.php
+    - app/Models/Save.php
+    - app/Models/Tag.php
+    - app/Models/Like.php
+    - app/Models/Author.php
+    - app/Models/Category.php
+    - app/Models/Role.php
+    - app/Models/Permission.php
+    - database/seeders/MonumentSeeder.php
+    - database/seeders/CommentSeeder.php
+    - database/seeders/AddressSeeder.php
+    - database/seeders/AchievementSeeder.php
+    - database/seeders/SubAchievementSeeder.php
+    - database/seeders/EventSeeder.php
+    - database/seeders/RouteSeeder.php
+    - database/seeders/SponsorSeeder.php
+    - database/seeders/StopSeeder.php
+    - database/seeders/RatingSeeder.php
+    - database/seeders/ImageSeeder.php
+    - database/seeders/QRSeeder.php
+    - database/seeders/BlogEntrySeeder.php
+    - database/seeders/TagSeeder.php
+    - database/seeders/LikeSeeder.php
+    - database/seeders/AuthorSeeder.php
+    - database/seeders/CategorySeeder.php
+    - database/seeders/RoleSeeder.php
+    - database/seeders/PermissionSeeder.php
+    - database/seeders/StyleSeeder.php
+    - database/seeders/SaveSeeder.php
+    - tests/Feature/Http/Controllers/Api/MonumentControllerTest.php
+    - tests/Feature/Http/Controllers/Api/BlogEntryControllerTest.php
+    - tests/Feature/Http/Controllers/Api/StyleControllerTest.php
+    - tests/Feature/Http/Controllers/Api/CommentControllerTest.php
+    - tests/Feature/Http/Controllers/Api/AddressControllerTest.php
+    - tests/Feature/Http/Controllers/Api/AchievementControllerTest.php
+    - tests/Feature/Http/Controllers/Api/SubAchievementControllerTest.php
+    - tests/Feature/Http/Controllers/Api/EventControllerTest.php
+    - tests/Feature/Http/Controllers/Api/RouteControllerTest.php
+    - tests/Feature/Http/Controllers/Api/StopControllerTest.php
+    - tests/Feature/Http/Controllers/Api/SponsorControllerTest.php
+    - tests/Feature/Http/Controllers/Api/ImageControllerTest.php
+    - tests/Feature/Http/Controllers/Api/RatingControllerTest.php
+    - tests/Feature/Http/Controllers/Api/QRControllerTest.php
+    - app/Http/Requests/Api/MonumentStoreRequest.php
+    - app/Http/Requests/Api/BlogEntryStoreRequest.php
+    - app/Http/Requests/Api/StyleStoreRequest.php
+    - app/Http/Requests/Api/CommentStoreRequest.php
+    - app/Http/Requests/Api/AddressStoreRequest.php
+    - app/Http/Requests/Api/AchievementStoreRequest.php
+    - app/Http/Requests/Api/SubAchievementStoreRequest.php
+    - app/Http/Requests/Api/EventStoreRequest.php
+    - app/Http/Requests/Api/RouteStoreRequest.php
+    - app/Http/Requests/Api/SponsorStoreRequest.php
+    - app/Http/Requests/Api/ImageStoreRequest.php
+    - app/Http/Requests/Api/RatingStoreRequest.php
+updated:
+    - routes/web.php
+models:
+    Obra: { titulo: string, tipo: 'enum:Escultura,Mural,Pintura', fecha_creacion: date, imagen_principal: string, latitud: decimal, longitud: decimal, significado: text, relationships: { belongsToMany: 'Autor, User', morphMany: 'Comentario, Parada, Imagen, Calificacion', belongsTo: 'Estilo, QR, Direccion', morphToMany: Guarda } }
+    Estilo: { nombre: string, relationships: { hasMany: Obra } }
+    Comentario: { contenido: text, imagen_principal: url, relationships: { morphMany: MeGusta, belongsTo: User, morphTo: Comentable } }
+    Direccion: { direccion: string, ciudad: string, cp: string, provincia: string, pais: string, calle: string, piso_bloque_edificio: string, relationships: { hasOne: Obra, belongsToMany: User } }
+    Logro: { titulo: string, descripcion: text, estado: 'enum:pendiente,en_curso,completado', tiempo: datetime, relationships: { hasMany: SubLogro, belongsToMany: User } }
+    SubLogro: { titulo: string, descripcion: text, estado: 'enum:pendiente,en_curso,completado', tiempo: datetime, relationships: { belongsTo: Logro, belongsToMany: User } }
+    Evento: { titulo: string, descripcion: text, max_inscritos: integer, tipo_usuario: 'enum:creador,participante', relationships: { belongsToMany: 'Ruta, User', morphMany: Calificacion } }
+    Ruta: { nombre: string, ciudad: string, distancia: float, tiempo: time, estado: 'enum:pendiente,comenzada,completada', relationships: { belongsToMany: 'Obra, Evento, User', hasMany: Parada, morphMany: Calificacion, morphToMany: Guarda } }
+    Parada: { nombre: string, relationships: { belongsTo: Ruta, morphTo: Paradable, belongsToMany: User } }
+    Patrocinador: { nombre: string, codigo_patrocinador: string, punto_de_interés: string, relationships: { morphMany: Parada } }
+    Imagen: { url: string, relationships: { morphTo: Imageable } }
+    Calificacion: { calificación: 'enum:1,2,3,4,5', relationships: { morphTo: Calificable } }
+    QR: { path: string, image: string, relationships: { hasOne: Monument } }
+    EntradaBlog: { título: string, contenido: text, descripción: text, imagen_principal: string, relationships: { morphMany: 'Comentario, MeGusta, Imagen, Calificacion', belongsToMany: 'Categoria, Etiqueta, User', morphToMany: Guarda } }
+    Guarda: { relationships: { morphTo: Guardable } }
+    Etiqueta: { nombre: string, relationships: { belongsToMany: EntradaBlog } }
+    MeGusta: { relationships: { belongsTo: User, morphTo: Likeable } }
+    Autor: { nombre: string, relationships: { belongsToMany: Obra, morphToMany: Guarda } }
+    Categoria: { nombre: string, relationships: { belongsToMany: EntradaBlog } }
+    Rol: { nombre: string, relationships: { belongsToMany: 'Permiso, User' } }
+    Permiso: { nombre: string, relationships: { belongsToMany: Rol } }
+    Monument: { title: string, type: 'enum:Sculpture,Mural,Painting', creation_date: date, main_image: string, latitude: decimal, longitude: decimal, meaning: text, relationships: { belongsToMany: 'Author, User', morphMany: 'Comment, Stop, Image, Rating', belongsTo: 'Style, QR, Address', morphToMany: Save } }
+    Style: { name: string, relationships: { hasMany: Monument } }
+    Comment: { content: text, main_image: url, relationships: { morphMany: Like, belongsTo: User, morphTo: Commentable } }
+    Address: { address: string, city: string, zip_code: string, province: string, country: string, street: string, floor_block_building: string, relationships: { hasOne: Monument, belongsToMany: User } }
+    Achievement: { title: string, description: text, status: 'enum:pending,in_progress,completed', time: datetime, relationships: { hasMany: SubAchievement, belongsToMany: User } }
+    SubAchievement: { title: string, description: text, status: 'enum:pending,in_progress,completed', time: datetime, relationships: { belongsTo: Achievement, belongsToMany: User } }
+    Event: { title: string, description: text, max_attendees: integer, user_type: 'enum:creator,participant', relationships: { belongsToMany: 'Route, User', morphMany: Rating } }
+    Route: { name: string, city: string, distance: float, time: time, status: 'enum:pending,started,completed', relationships: { belongsToMany: 'Monument, Event, User', hasMany: Stop, morphMany: Rating, morphToMany: Save } }
+    Stop: { name: string, relationships: { belongsTo: Route, morphTo: Stoppable, belongsToMany: User } }
+    Sponsor: { name: string, sponsor_code: string, point_of_interest: string, relationships: { morphMany: Stop } }
+    Image: { url: string, relationships: { morphTo: Imageable } }
+    Rating: { rating: 'enum:1,2,3,4,5', relationships: { morphTo: Rateable } }
+    BlogEntry: { title: string, content: text, description: text, main_image: string, relationships: { morphMany: 'Comment, Like, Image, Rating', belongsToMany: 'Category, Tag, User', morphToMany: Save } }
+    Save: { relationships: { morphTo: Savable } }
+    Tag: { name: string, relationships: { belongsToMany: BlogEntry } }
+    Like: { relationships: { belongsTo: User, morphTo: Likable } }
+    Author: { name: string, relationships: { belongsToMany: Monument, morphToMany: Save } }
+    Category: { name: string, relationships: { belongsToMany: BlogEntry } }
+    Role: { name: string, relationships: { belongsToMany: 'Permission, User' } }
+    Permission: { name: string, relationships: { belongsToMany: Role } }

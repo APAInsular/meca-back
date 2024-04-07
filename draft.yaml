@@ -1,140 +1,452 @@
-# --------------------------------------------------------------------------------------
-#                               ** MODELS **
-# --------------------------------------------------------------------------------------
-
 models:
-  User:
-    name: string:35
-    surname1: string:35
-    surname2: string:35
-    email: string
-    password: string
-    fecha_nacimiento: date
-    profile_image: string
-    nacionalidad: string
-    puntos: integer
-    relationships:
-      hasMany: Comentario, MeGusta, Calificación, Favorito, Entrada
-      belongToMany: Evento, Rol, Logro, Sublogro, *Dirección, Obra
+  # User:
+  #   name: string
+  #   surname1: string
+  #   surname2: string
+  #   email: string
+  #   password: string
+  #   fecha_nacimiento: date
+  #   profile_image: string
+  #   nacionalidad: string
+  #   puntos: integer
+  #   relationships:
+  #     hasMany: Comentario, MeGusta, Calificación, EntradaBlog
+  #     belongsToMany: Evento, Rol, Logro, Sublogro, Dirección, Obra, Ruta
 
-  Obra:
-    titulo: string
-    tipo: enum:Escultura,Mural,Pintura
-    fecha_creacion: date
-    imagen_principal: string
-    latitud: decimal:10:8
-    longitud: decimal:11:8
-    significado: text
-    relationships:
-      hasMany: Comentario, MeGusta, Calificación, Favorito, Entrada
-      belongToMany: Evento, Rol, Logro, Sublogro, *Dirección, Obr9
+  Monument:
+      title: string
+      type: enum:Sculpture,Mural,Painting
+      creation_date: date
+      main_image: string
+      latitude: decimal
+      longitude: decimal
+      meaning: text
+      relationships:
+          belongsToMany: Author, User
+          morphMany: Comment, Stop, Image, Rating
+          belongsTo: Style, QR, Address
+          morphToMany: Save
 
-  Coment:
-    contenido: text
-    relationships:
-      belongsTo: Obra, MeGusta, Entrada
+  Style:
+      name: string
+      relationships:
+          hasMany: Monument
+
+  Comment:
+      content: text
+      main_image: url
+      relationships:
+          morphMany: Like
+          belongsTo: User
+          morphTo: Commentable
 
   Address:
-    direccion: string
-    ciudad: string
-    cp: string:5
-    provincia: string
-    pais: string
-    calle: string
-    piso_bloque_edificio: string
-    relationships:
-      morphTo: addressable
+      address: string
+      city: string
+      zip_code: string
+      province: string
+      country: string
+      street: string
+      floor_block_building: string
+      relationships:
+          hasOne: Monument
+          belongsToMany: User
 
-  Logro:
-    titulo: string
-    descripcion: text
-    estado: enum:pendiente,en_curso,completado
-    tiempo: datetime
-    relationships:
-      hasMany: SubLogro
-      belongsTo: User
 
-  Evento:
-    titulo: string
-    descripcion: text
-    max_inscritos: integer
-    tipo_usuario: enum:creador,inscrito
+  Achievement:
+    title: string
+    description: text
+    status: enum:pending,in_progress,completed
+    time: datetime
     relationships:
-      belongToMany: Ruta
-      morphToMany: User
+        hasMany: SubAchievement
+        belongsToMany: User
 
-  Ruta:
-    nombre: string
-    ciudad: string
-    distancia: float
-    tiempo: time
-    puntos_interés: string
-    estado: enum:prevista,comenzada,terminada
-    relationships:
-      belongToMany: obra, evento, patrocinador, oYav9r8t0
+  SubAchievement:
+      title: string
+      description: text
+      status: enum:pending,in_progress,completed
+      time: datetime
+      relationships:
+          belongsTo: Achievement
+          belongsToMany: User
 
-  Patrocinador:
-    nombre: string
-    codigo_patrocinador: string
-    punto_de_interés: string
-    calificación: enum:1,2,3,4,5
+  Event:
+      title: string
+      description: text
+      max_attendees: integer
+      user_type: enum:creator,participant
+      relationships:
+          belongsToMany: Route, User
+          morphMany: Rating
 
-  Imagen:
-    url: string
-    tipo: enum:EntradaBlog,Obra
-    relationships:
-      morphTo: imageable
+
+  Route:
+      name: string
+      city: string
+      distance: float
+      time: time
+      status: enum:pending,started,completed
+      relationships:
+          belongsToMany: Monument, Event, User
+          hasMany: Stop
+          morphMany: Rating
+          morphToMany: Save
+
+  Stop:
+      name: string
+      relationships:
+          belongsTo: Route
+          morphTo: Stoppable
+          belongsToMany: User
+
+  Sponsor:
+      name: string
+      sponsor_code: string
+      point_of_interest: string
+      relationships:
+          morphMany: Stop, patrocinador, oYav9r8t0
+
+
+  Image:
+      url: string
+      relationships:
+          morphTo: Imageable
+
+  Rating:
+      rating: enum:1,2,3,4,5
+      relationships:
+          morphTo: Rateable
 
   QR:
-    ruta: string
-    imagen: string
-    relationships:
-      morphTo: qrable
+      path: string
+      image: string
+      relationships:
+          hasOne: Monument
 
-  EntradaBlog:
-    título: string
-    contenido: text
-    descripción: text
-    imagen_principal: string
-    relationships:
-      morphToMany: Etiqueta
+  BlogEntry:
+      title: string
+      content: text
+      description: text
+      main_image: string
+      relationships:
+          morphMany: Comment, Like, Image, Rating
+          belongsToMany: Category, Tag, User
+          morphToMany: Save
 
-  Etiqueta:
-    nombre: string
-    relationships:
-      morphToMany: EntradaBlog
 
-  MeGusta:
-    tipo: enum:Comentarios,EntradaBlog
+  Save:
     relationships:
-      morphTo: likable
+        morphTo: Savable
+
+  Tag:
+      name: string
+      relationships:
+          belongsToMany: BlogEntry
+
+  Like:
+      relationships:
+          belongsTo: User
+          morphTo: Likable
+
+  Author:
+      name: string
+      relationships:
+          belongsToMany: Monument
+          morphToMany: Save
+
+  Category:
+      name: string
+      relationships:
+          belongsToMany: BlogEntry
+
+  Role:
+      name: string
+      relationships:
+          belongsToMany: Permission, User
+
+  Permission:
+      name: string
+      relationships:
+          belongsToMany: Role
+
 
 # --------------------------------------------------------------------------------------
 #                               ** SEEDERS **
 # --------------------------------------------------------------------------------------
 
-seeders: Usuario, Obra, Comentario, Dirección, Logro, Evento, Ruta, Patrocinador, Imagen, QR, EntradaBlog, Etiqueta, MeGusta
-
+seeders: Monument, Comment, Address, Achievement, SubAchievement, Event, Route, Sponsor, Stop, Rating, Image, QR, BlogEntry, Tag, Like, Author, Category, Role, Permission, Style, Save
 # --------------------------------------------------------------------------------------
 #                               ** CONTROLLERS **
 # --------------------------------------------------------------------------------------
 
 controllers:
-  Api\UsuarioController:
+  Api\MonumentController:
+      index:
+          query: all
+          respond: 200
+      store:
+          validate: title, type, creation_date, main_image, latitude, longitude, meaning
+          save: Monument
+          respond: 201
+      show:
+          respond: 200
+      update:
+          update: Monument
+          respond: 200
+      destroy:
+          delete: Monument
+          respond: 204
+      error:
+          respond: 400
+
+
+  Api\BlogEntryController:
+      index:
+          query: all
+          respond: 200
+      store:
+          validate: title, type, creation_date, main_image, latitude, longitude, meaning
+          save: BlogEntry
+          respond: 201
+      show:
+          respond: 200
+      update:
+          update: BlogEntry
+          respond: 200
+      destroy:
+          delete: BlogEntry
+          respond: 204
+      error:
+          respond: 400
+
+  Api\StyleController:
+      index:
+          query: all
+          respond: 200
+      store:
+          validate: name
+          save: Style
+          respond: 201
+      show:
+          respond: 200
+      update:
+          update: Style
+          respond: 200
+      destroy:
+          delete: Style
+          respond: 204
+      error:
+          respond: 400
+
+  Api\CommentController:
+      index:
+          query: all
+          respond: 200
+      store:
+          validate: content, main_image
+          save: Comment
+          respond: 201
+      show:
+          respond: 200
+      update:
+          update: Comment
+          respond: 200
+      destroy:
+          delete: Comment
+          respond: 204
+      error:
+          respond: 400
+
+
+  Api\AddressController:
     index:
-      query: all
-      respond: 200
+        query: all
+        respond: 200
     store:
-      validate: nombre, contraseña, email
-      save: Usuario
-      respond: 201
+        validate: address, city, zip_code, province, country, street, floor_block_building
+        save: Address
+        respond: 201
     show:
-      respond: 200
+        respond: 200
     update:
-      update: Usuario
-      respond: 200
+        update: Address
+        respond: 200
     destroy:
-      delete: Usuario
-      respond: 204
+        delete: Address
+        respond: 204
     error:
-      respond: 400
+        respond: 400
+
+  Api\AchievementController:
+      index:
+          query: all
+          respond: 200
+      store:
+          validate: title, description, status, time
+          save: Achievement
+          respond: 201
+      show:
+          respond: 200
+      update:
+          update: Achievement
+          respond: 200
+      destroy:
+          delete: Achievement
+          respond: 204
+      error:
+          respond: 400
+
+  Api\SubAchievementController:
+      index:
+          query: all
+          respond: 200
+      store:
+          validate: title, description, status, time
+          save: SubAchievement
+          respond: 201
+      show:
+          respond: 200
+      update:
+          update: SubAchievement
+          respond: 200
+      destroy:
+          delete: SubAchievement
+          respond: 204
+      error:
+          respond: 400
+
+  Api\EventController:
+      index:
+          query: all
+          respond: 200
+      store:
+          validate: title, description, max_attendees, user_type
+          save: Event
+          respond: 201
+      show:
+          respond: 200
+      update:
+          update: Event
+          respond: 200
+      destroy:
+          delete: Event
+          respond: 204
+      error:
+          respond: 400
+
+
+  Api\RouteController:
+      index:
+          query: all
+          respond: 200
+      store:
+          validate: name, city, distance, time, status
+          save: Route
+          respond: 201
+      show:
+          respond: 200
+      update:
+          update: Route
+          respond: 200
+      destroy:
+          delete: Route
+          respond: 204
+      error:
+          respond: 400
+
+  Api\StopController:
+      index:
+          query: all
+          respond: 200
+      store:
+          save: Stop
+          respond: 201
+      show:
+          respond: 200
+      update:
+          update: Stop
+          respond: 200
+      destroy:
+          delete: Stop
+          respond: 204
+      error:
+          respond: 400
+
+  Api\SponsorController:
+      index:
+          query: all
+          respond: 200
+      store:
+          validate: name, sponsor_code, point_of_interest
+          save: Sponsor
+          respond: 201
+      show:
+          respond: 200
+      update:
+          update: Sponsor
+          respond: 200
+      destroy:
+          delete: Sponsor
+          respond: 204
+      error:
+          respond: 400
+
+
+  Api\ImageController:
+      index:
+          query: all
+          respond: 200
+      store:
+          validate: url, type
+          save: Image
+          respond: 201
+      show:
+          respond: 200
+      update:
+          update: Image
+          respond: 200
+      destroy:
+          delete: Image
+          respond: 204
+      error:
+          respond: 400
+
+  Api\RatingController:
+      index:
+          query: all
+          respond: 200
+      store:
+          validate: rating
+          save: Rating
+          respond: 201
+      show:
+          respond: 200
+      update:
+          update: Rating
+          respond: 200
+      destroy:
+          delete: Rating
+          respond: 204
+      error:
+          respond: 400
+
+  Api\QRController:
+      index:
+          query: all
+          respond: 200
+      store:
+          validate: path, image
+          save: QR
+          respond: 201
+      show:
+          respond: 200
+      update:
+          update: QR
+          respond: 200
+      destroy:
+          delete: QR
+          respond: 204
+      error:
+          respond: 400
+
