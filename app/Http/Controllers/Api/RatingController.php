@@ -3,47 +3,47 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\RatingControllerStoreRequest;
+use App\Http\Requests\Api\RatingStoreRequest;
 use App\Models\Rating;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+
 
 class RatingController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(Request $request)
     {
         $ratings = Rating::all();
 
         return response()->noContent(200);
     }
 
-    public function store(RatingControllerStoreRequest $request): Response
+    public function store(RatingStoreRequest $request)
     {
         $rating = Rating::create($request->validated());
 
         return response()->noContent(201);
     }
 
-    public function show(Request $request, Rating $rating): Response
+    public function show(Request $request, Rating $rating)
     {
         return response()->noContent(200);
     }
 
-    public function update(Request $request, Rating $rating): Response
+    public function update(Request $request, Rating $rating)
     {
         $rating->update([]);
 
         return response()->noContent(200);
     }
 
-    public function destroy(Request $request, Rating $rating): Response
+    public function destroy(Request $request, Rating $rating)
     {
         $rating->delete();
 
         return response()->noContent();
     }
 
-    public function error(Request $request): Response
+    public function error(Request $request)
     {
         return response()->noContent(400);
     }

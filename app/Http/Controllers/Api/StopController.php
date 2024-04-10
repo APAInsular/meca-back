@@ -3,46 +3,47 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\StopStoreRequest;
 use App\Models\Stop;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+
 
 class StopController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(StopStoreRequest $request)
     {
         $stops = Stop::all();
 
         return response()->noContent(200);
     }
 
-    public function store(Request $request): Response
+    public function store(StopStoreRequest $request)
     {
         $stop = Stop::create($request->all());
 
         return response()->noContent(201);
     }
 
-    public function show(Request $request, Stop $stop): Response
+    public function show(StopStoreRequest $request, Stop $stop)
     {
         return response()->noContent(200);
     }
 
-    public function update(Request $request, Stop $stop): Response
+    public function update(StopStoreRequest $request, Stop $stop)
     {
         $stop->update([]);
 
         return response()->noContent(200);
     }
 
-    public function destroy(Request $request, Stop $stop): Response
+    public function destroy(StopStoreRequest $request, Stop $stop)
     {
         $stop->delete();
 
         return response()->noContent();
     }
 
-    public function error(Request $request): Response
+    public function error(Request $request)
     {
         return response()->noContent(400);
     }
