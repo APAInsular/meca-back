@@ -5,46 +5,99 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\EventStoreRequest;
 use App\Models\Event;
-use Illuminate\Http\Request;
-
 
 class EventController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         $events = Event::all();
 
-        return response()->noContent(200);
+        if ($events->isEmpty()) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'No se encontraron eventos.',
+                'data' => [],
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Eventos encontrados exitosamente.',
+            'data' => $events,
+        ], 200);
     }
 
     public function store(EventStoreRequest $request)
     {
-        $event = Event::create($request->validated());
+        $validatedData = $request->validated();
 
-        return response()->noContent(201);
+        $event = Event::create($validatedData);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Evento creado exitosamente.',
+            'data' => $event,
+        ], 201);
     }
 
-    public function show(Request $request, Event $event)
+    public function show(Event $event)
     {
-        return response()->noContent(200);
+        if (!$event) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Evento no encontrado.',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Detalles del evento mostrados exitosamente.',
+            'data' => $event,
+        ], 200);
     }
 
-    public function update(Request $request, Event $event)
+    public function update(EventStoreRequest $request, Event $event)
     {
-        $event->update([]);
+        if (!$event) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Evento no encontrado para actualizar.',
+            ], 404);
+        }
 
-        return response()->noContent(200);
+        $validatedData = $request->validated();
+
+        $event->update($validatedData);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Evento actualizado exitosamente.',
+            'data' => $event,
+        ], 200);
     }
 
-    public function destroy(Request $request, Event $event)
+    public function destroy(Event $event)
     {
+        if (!$event) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Evento no encontrado para eliminar.',
+            ], 404);
+        }
+
         $event->delete();
 
-        return response()->noContent();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Evento eliminado exitosamente.',
+        ], 204);
     }
 
-    public function error(Request $request)
+    public function error()
     {
-        return response()->noContent(400);
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Ocurrió un error al procesar la solicitud de eventos.',
+        ], 400);
     }
 }

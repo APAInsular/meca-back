@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AchievementStoreRequest;
 use App\Models\Achievement;
-use Illuminate\Http\Request;
+
 
 class AchievementController extends Controller
 {
@@ -55,7 +55,7 @@ class AchievementController extends Controller
         ], 200);
     }
 
-    public function update(Request $request, Achievement $achievement)
+    public function update( Achievement $achievement)
     {
         if (is_null($achievement)) {
             return response()->json([

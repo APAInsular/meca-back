@@ -5,46 +5,99 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\RatingStoreRequest;
 use App\Models\Rating;
-use Illuminate\Http\Request;
-
 
 class RatingController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         $ratings = Rating::all();
 
-        return response()->noContent(200);
+        if ($ratings->isEmpty()) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'No se encontraron calificaciones.',
+                'data' => []
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Calificaciones encontradas.',
+            'data' => $ratings
+        ], 200);
     }
 
     public function store(RatingStoreRequest $request)
     {
-        $rating = Rating::create($request->validated());
+        $validated = $request->validated();
 
-        return response()->noContent(201);
+        $rating = Rating::create($validated);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Calificación creada exitosamente.',
+            'data' => $rating
+        ], 201);
     }
 
-    public function show(Request $request, Rating $rating)
+    public function show(Rating $rating)
     {
-        return response()->noContent(200);
+        if (!$rating) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Calificación no encontrada.'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Detalles de la calificación.',
+            'data' => $rating
+        ], 200);
     }
 
-    public function update(Request $request, Rating $rating)
+    public function update(RatingStoreRequest $request, Rating $rating)
     {
-        $rating->update([]);
+        if (!$rating) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Calificación no encontrada.'
+            ], 404);
+        }
 
-        return response()->noContent(200);
+        $validated = $request->validated();
+
+        $rating->update($validated);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Calificación actualizada.',
+            'data' => $rating
+        ], 200);
     }
 
-    public function destroy(Request $request, Rating $rating)
+    public function destroy(Rating $rating)
     {
+        if (!$rating) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Calificación no encontrada.'
+            ], 404);
+        }
+
         $rating->delete();
 
-        return response()->noContent();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Calificación eliminada.'
+        ], 204);
     }
 
-    public function error(Request $request)
+    public function error()
     {
-        return response()->noContent(400);
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Error en los métodos del controlador para calificaciones.'
+        ], 400);
     }
 }
