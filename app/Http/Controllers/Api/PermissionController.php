@@ -3,37 +3,37 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Like;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 
-class LikeController extends Controller
+class PermissionController extends Controller
 {
     /**
-     * Display a listing of the likes.
+     * Display a listing of the permissions.
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        $likes = Like::all();
+        $permissions = Permission::all();
 
-        if ($likes->isEmpty()) {
+        if ($permissions->isEmpty()) {
             return response()->json([
                 'status' => 'failed',
-                'message' => '¡No se encontraron likes!',
+                'message' => '¡No se encontraron permisos!',
                 'data' => [],
             ], 404);
         }
 
         return response()->json([
             'status' => 'success',
-            'message' => '¡Likes encontrados!',
-            'data' => $likes,
+            'message' => '¡Permisos encontrados!',
+            'data' => $permissions,
         ], 200);
     }
 
     /**
-     * Store a newly created like in storage.
+     * Store a newly created permission in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
@@ -41,62 +41,60 @@ class LikeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'likable_type' => 'required|string',
-            'likable_id' => 'required|integer',
+            'name' => 'required|string|unique:permissions,name',
         ]);
 
-        $like = Like::create($request->all());
+        $permission = Permission::create($request->all());
 
         return response()->json([
             'status' => 'success',
-            'message' => '¡Like creado exitosamente!',
-            'data' => $like,
+            'message' => '¡Permiso creado exitosamente!',
+            'data' => $permission,
         ], 201);
     }
 
     /**
-     * Display the specified like.
+     * Display the specified permission.
      *
-     * @param  \App\Models\Like  $like
+     * @param  \App\Models\Permission  $permission
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Like $like)
+    public function show(Permission $permission)
     {
-        if (is_null($like)) {
+        if (is_null($permission)) {
             return response()->json([
                 'status' => 'failed',
-                'message' => '¡No se ha encontrado el like!',
+                'message' => '¡No se ha encontrado el permiso!',
             ], 404);
         }
 
         return response()->json([
             'status' => 'success',
-            'message' => '¡Mostrando detalles del like!',
-            'data' => $like,
+            'message' => '¡Mostrando detalles del permiso!',
+            'data' => $permission,
         ], 200);
     }
 
     /**
-     * Remove the specified like from storage.
+     * Remove the specified permission from storage.
      *
-     * @param  \App\Models\Like  $like
+     * @param  \App\Models\Permission  $permission
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Like $like)
+    public function destroy(Permission $permission)
     {
-        if (is_null($like)) {
+        if (is_null($permission)) {
             return response()->json([
                 'status' => 'failed',
-                'message' => '¡No se ha encontrado el like para eliminar!',
+                'message' => '¡No se ha encontrado el permiso para eliminar!',
             ], 404);
         }
 
-        $like->delete();
+        $permission->delete();
 
         return response()->json([
             'status' => 'success',
-            'message' => '¡Like eliminado!',
+            'message' => '¡Permiso eliminado!',
         ], 204);
     }
 
@@ -109,7 +107,7 @@ class LikeController extends Controller
     {
         return response()->json([
             'status' => 'error',
-            'message' => '¡Ha ocurrido un error con los métodos del controlador para likes!',
+            'message' => '¡Ha ocurrido un error con los métodos del controlador para permisos!',
         ], 400);
     }
 }
