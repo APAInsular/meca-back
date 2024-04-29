@@ -24,12 +24,12 @@ class User extends Authenticatable
         'foto_perfil',
         'email',
         'password',
-        'confirmar_contraseña',
-        'nacionalidad',
-        'fecha_nacimiento',
-        'localidad',
-        'CP',
-        'puntos',
+        'confirm_password',
+        'nationality',
+        'date_of_birth',
+        'location',
+        'postal_code',
+        'points',
     ];
     
 
