@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\RatingStoreRequest;
 use App\Models\Rating;
 
-class RatingController extends Controller
+class RouteController extends Controller
 {
     public function index()
     {
