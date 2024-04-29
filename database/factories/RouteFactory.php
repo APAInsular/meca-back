@@ -23,7 +23,7 @@ class RouteFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'city' => $this->faker->city(),
-            'distance' => $this->faker->randomFloat(0, 0, 9999999999.),
+            'distance' => $this->faker->randomFloat(0, 0, 100.),
             'time' => $this->faker->time(),
             'status' => $this->faker->randomElement(["pending","started","completed"]),
         ];

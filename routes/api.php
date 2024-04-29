@@ -14,4 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->resource('/user', UserController::class);
+Route::resource('/user', UserController::class);

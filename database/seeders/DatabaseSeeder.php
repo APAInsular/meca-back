@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
         \App\Models\Route::factory(10)->create();
 
         // Stops
-        \App\Models\Stop::factory(10)->create();
+        ///\App\Models\Stop::factory(10)->create();
 
         // Sponsors
         \App\Models\Sponsor::factory(10)->create();
