@@ -53,11 +53,11 @@ Route::resource('stops', App\Http\Controllers\Api\StopController::class)->except
 Route::get('sponsors/error', [App\Http\Controllers\Api\SponsorController::class, 'error']);
 Route::resource('sponsors', App\Http\Controllers\Api\SponsorController::class)->except('create', 'edit');
 
-// Route::get('images/error', [App\Http\Controllers\Api\ImageController::class, 'error']);
+Route::get('images/error', [App\Http\Controllers\Api\ImageController::class, 'error']);
 Route::resource('images', App\Http\Controllers\Api\ImageController::class)->except('create', 'edit');
 
 Route::get('ratings/error', [App\Http\Controllers\Api\RatingController::class, 'error']);
 Route::resource('ratings', App\Http\Controllers\Api\RatingController::class)->except('create', 'edit');
 
-Route::get('q-rs/error', [App\Http\Controllers\Api\QRController::class, 'error']);
-Route::resource('q-rs', App\Http\Controllers\Api\QRController::class)->except('create', 'edit');
+Route::get('authors/error', [App\Http\Controllers\Api\AuthorController::class, 'error']);
+Route::resource('authors', App\Http\Controllers\Api\AuthorController::class)->except('create', 'edit');
