@@ -13,13 +13,23 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
+            $table->string('nombre')->required();
+            $table->string('apellido1')->required();
+            $table->string('apellido2')->nullable();
+            $table->string('foto_perfil')->nullable();
+            $table->string('email')->unique()->required();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->required();
+            $table->string('confirmar_contraseña')->nullable(); // Agregado para confirmar contraseña
+            $table->string('nacionalidad')->required();
+            $table->date('fecha_nacimiento')->nullable();
+            $table->string('localidad')->required();
+            $table->string('CP')->nullable();
+            $table->integer('puntos')->default(0); // Agregado el campo de puntos
             $table->rememberToken();
             $table->timestamps();
         });
+
     }
 
     /**
