@@ -28,9 +28,9 @@ class Rol extends Model
         'id' => 'integer',
     ];
 
-    public function permisos(): BelongsToMany
+    public function Permissions(): BelongsToMany
     {
-        return $this->belongsToMany(Permiso::class);
+        return $this->belongsToMany(Permission::class);
     }
 
     public function users(): BelongsToMany

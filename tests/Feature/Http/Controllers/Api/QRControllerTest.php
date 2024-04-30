@@ -40,17 +40,17 @@ final class QRControllerTest extends TestCase
     #[Test]
     public function store_saves_and_responds_with(): void
     {
-        $ruta = $this->faker->word();
-        $imagen = $this->faker->word();
+        $path = $this->faker->word();
+        $image = $this->faker->word();
 
         $response = $this->post(route('q-rs.store'), [
-            'ruta' => $ruta,
-            'imagen' => $imagen,
+            'path' => $path,
+            'image' => $image,
         ]);
 
         $qRs = QR::query()
-            ->where('ruta', $ruta)
-            ->where('imagen', $imagen)
+            ->where('path', $path)
+            ->where('image', $image)
             ->get();
         $this->assertCount(1, $qRs);
         $qR = $qRs->first();

@@ -16,8 +16,8 @@ class QR extends Model
      * @var array
      */
     protected $fillable = [
-        'ruta',
-        'imagen',
+        'path',
+        'image',
     ];
 
     /**
@@ -29,8 +29,8 @@ class QR extends Model
         'id' => 'integer',
     ];
 
-    public function obra(): HasOne
+    public function monument(): HasOne
     {
-        return $this->hasOne(Obra::class);
+        return $this->hasOne(Monument::class);
     }
 }

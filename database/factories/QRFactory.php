@@ -21,8 +21,8 @@ class QRFactory extends Factory
     public function definition(): array
     {
         return [
-            'ruta' => $this->faker->word(),
-            'imagen' => $this->faker->word(),
+            'path' => $this->faker->word(),
+            'image' => $this->faker->word(),
         ];
     }
 }

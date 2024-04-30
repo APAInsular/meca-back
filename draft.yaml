@@ -105,7 +105,7 @@ models:
       sponsor_code: string
       point_of_interest: string
       relationships:
-          morphMany: Stop
+          morphMany: Stop, patrocinador, oYav9r8t0
 
 
   Image:
