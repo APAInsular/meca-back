@@ -28,8 +28,7 @@ return new class extends Migration
             $table->integer('points')->default(0); // Added the points field
             $table->rememberToken();
             $table->timestamps();
-        });        
-
+        });
     }
 
     /**

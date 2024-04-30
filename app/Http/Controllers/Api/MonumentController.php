@@ -19,23 +19,65 @@ class MonumentController extends Controller
             ->groupBy('monuments.id', 'monuments.name', 'monuments.description', 'monuments.location', 'monuments.created_at', 'monuments.updated_at')
             ->get(['monuments.*', 'styles.name as style', 'authors.name as author']);
     }
-    public function index()
-    {
-        $monuments = Monument::all();
 
-        if ($monuments->isEmpty()) {
+    public function getTopRatedMonuments(Request $request)
+    {
+        if ($request->exists('top')) {
+            $topRatedMonuments = Monument::withCount('ratings')
+                ->orderByDesc('ratings_count')
+                ->limit(4)
+                ->get();
+
+            // Carga las relaciones de calificaciones
+            $topRatedMonuments->load('ratings');
+
+            return $topRatedMonuments;
+        } else {
             return response()->json([
                 'status' => 'failed',
-                'message' => '¡No se encontraron monumentos!',
-                'data' => [],
-            ], 404);
+                'message' => 'Error de validación',
+            ], 400);
+        }
+    }
+
+    public function index(Request $request)
+    {
+        if ($request->exists('top')) {
+            $topRatedMonuments = Monument::withCount('ratings')
+                ->orderByDesc('ratings_count')
+                ->limit(4)
+                ->get();
+
+            // Carga las relaciones de calificaciones
+            $topRatedMonuments->load('ratings');
+
+            return $topRatedMonuments;
         }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => '¡Monumentos encontrados!',
-            'data' => $monuments,
-        ], 200);
+        // Otras lógicas según tus necesidades...
+
+        // Por ejemplo, si deseas obtener monumentos cercanos a una ubicación específica
+        // elseif ($request->exists('cerca')) { ... }
+
+        // Por defecto, simplemente devuelve todos los monumentos
+        else {
+            $monuments = Monument::all();
+            return $monuments;
+        }
+
+        // if ($monuments->isEmpty()) {
+        //     return response()->json([
+        //         'status' => 'failed',
+        //         'message' => '¡No se encontraron monumentos!',
+        //         'data' => [],
+        //     ], 404);
+        // } else {
+        //     return response()->json([
+        //         'status' => 'success',
+        //         'message' => '¡Monumentos encontrados!',
+        //         'data' => $monuments,
+        //     ], 200);
+        // }
     }
 
     public function store(Request $request)
