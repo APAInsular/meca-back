@@ -5,10 +5,24 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
+    public function getCategoryPostCount()
+    {
+        $categories = DB::table('categories')
+            ->join('blog_entry_category', 'categories.id', '=', 'blog_entry_category.category_id')
+            ->select('categories.name as category_name', DB::raw('COUNT(blog_entry_category.blog_entry_id) as post_count'))
+            ->groupBy('categories.name')
+            ->get();
+
+        foreach ($categories as $category) {
+            echo "[$category->category_name] - has $category->post_count post \n";
+        }
+    }
+
     public function index()
     {
         $categories = Category::all();

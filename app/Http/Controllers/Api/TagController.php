@@ -5,10 +5,24 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class TagController extends Controller
 {
+    public function getTagPostCount()
+    {
+        $tags = DB::table('tags')
+            ->join('blog_entry_tag', 'tags.id', '=', 'blog_entry_tag.tag_id')
+            ->select('tags.name as tag_name', DB::raw('COUNT(blog_entry_tag.blog_entry_id) as post_count'))
+            ->groupBy('tags.name')
+            ->get();
+
+        foreach ($tags as $tag) {
+            echo "[$tag->tag_name] - has $tag->post_count post \n";
+        }
+            }
+
     public function index()
     {
         $tags = Tag::all();
