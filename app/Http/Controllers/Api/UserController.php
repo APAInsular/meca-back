@@ -15,6 +15,43 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
+
+    public function getUsersByPointsCategory()
+    {
+        $users = User::select('id', 'name', 'last_name', 'second_last_name', 'profile_picture', 'points')
+            ->get()
+            ->groupBy(function ($user) {
+                if ($user->points > 125000) {
+                    return 'top';
+                } elseif ($user->points > 100000) {
+                    return 'platino';
+                } elseif ($user->points > 50000) {
+                    return 'oro';
+                } elseif ($user->points > 30000) {
+                    return 'plata';
+                } elseif ($user->points > 10000) {
+                    return 'bronce';
+                } else {
+                    return 'otros';
+                }
+            })
+            ->map(function ($group) {
+                return $group->map(function ($user) {
+                    return [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'last_name' => $user->last_name,
+                        'second_last_name' => $user->second_last_name,
+                        'profile_picture' => $user->profile_picture,
+                        'points' => $user->points,
+                    ];
+                })->toArray();
+            });
+
+        return $users;
+    }
+
+
     public function index()
     {
         $users = User::all();

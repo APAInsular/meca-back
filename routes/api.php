@@ -19,6 +19,8 @@ Route::resource('/user', UserController::class);
 
 Route::get('top-rated-monuments', [MonumentController::class, 'getTopRatedMonuments']);
 
+Route::get('users/points-category', [UserController::class, 'getUsersByPointsCategory']);
+
 ///////////////////////////////////////////////////////
 
 Route::get('q-rs/error', [App\Http\Controllers\Api\QRController::class, 'error']);

@@ -28,7 +28,7 @@ class Rating extends Model
         'id' => 'integer',
     ];
 
-    public function rateable(): MorphTo
+    public function ratings(): MorphTo
     {
         return $this->morphTo();
     }
