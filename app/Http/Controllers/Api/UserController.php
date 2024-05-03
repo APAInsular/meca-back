@@ -10,6 +10,16 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
+    public function userAchievements($userId)
+    {
+        return User::find($userId)
+            ->achievements()
+            ->select('achievements.id', 'achievements.name', 'achievements.description', 'achievement_user.created_at as achieved_at')
+            ->join('achievement_user', 'users.id', '=', 'achievement_user.user_id')
+            ->join('achievements', 'achievement_user.achievement_id', '=', 'achievements.id')
+            ->get();
+    }
+
     /**
      * Display a listing of the users.
      *

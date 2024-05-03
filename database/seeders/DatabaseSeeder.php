@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        //\App\Models\User::factory(10)->create();
+        \App\Models\User::factory(10)->create();
         // Seed other tables
 
         // // Password reset tokens
@@ -58,25 +58,25 @@ class DatabaseSeeder extends Seeder
         \App\Models\Sponsor::factory(10)->create();
 
         // Images
-        \App\Models\Image::factory(10)->create();
+        //\App\Models\Image::factory(10)->create();
 
         // Ratings
-        \App\Models\Rating::factory(10)->create();
+        //\App\Models\Rating::factory(10)->create();
 
         // QR codes
-        \App\Models\QR::factory(10)->create();
+        //\App\Models\QR::factory(10)->create();
 
         // Blog entries
         \App\Models\BlogEntry::factory(10)->create();
 
         // Saves
-        \App\Models\Save::factory(10)->create();
+        //\App\Models\Save::factory(10)->create();
 
         // Tags
         \App\Models\Tag::factory(10)->create();
 
         // Likes
-        \App\Models\Like::factory(10)->create();
+        //\App\Models\Like::factory(10)->create();
 
         // Authors
         \App\Models\Author::factory(10)->create();
