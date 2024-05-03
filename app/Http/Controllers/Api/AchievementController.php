@@ -5,10 +5,24 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AchievementStoreRequest;
 use App\Models\Achievement;
-
+use App\Models\User;
 
 class AchievementController extends Controller
 {
+    public function getUserAchievements()
+    {
+        $users = User::all();
+
+        foreach ($users as $user) {
+            echo "User " . $user->id . " does: ";
+        
+            $achievementsTitles = $user->achievements()->pluck('title')->toArray();
+            $achievementsString = implode(', ', $achievementsTitles);
+        
+            echo $achievementsString . "\n";
+        }         
+    }
+
     public function index()
     {
         $achievements = Achievement::all();

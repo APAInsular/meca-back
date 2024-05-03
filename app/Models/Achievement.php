@@ -38,8 +38,8 @@ class Achievement extends Model
         return $this->hasMany(SubAchievement::class);
     }
 
-    public function users(): BelongsToMany
+    public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'achievement-user', 'achievement_id', 'user_id');
     }
 }
