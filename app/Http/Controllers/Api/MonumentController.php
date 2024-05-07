@@ -20,20 +20,32 @@ class MonumentController extends Controller
             ->get(['monuments.*', 'styles.name as style', 'authors.name as author']);
     }
 
-    public function getTopRatedMonuments(Request $request)
+    public function findMonumentById($id)
     {
-        $topRatedMonuments = Monument::withCount('ratings')
-            ->orderByDesc('ratings_count')
-            ->limit(4)
-            ->get();
+        $monument = Monument::select('monuments.id', 'monuments.name', 'monuments.description', 'monuments.location', 'monuments.created_at', 'monuments.updated_at')
+            ->leftJoin('monument_style', 'monuments.id', '=', 'monument_style.monument_id')
+            ->leftJoin('styles', 'monument_style.style_id', '=', 'styles.id')
+            ->leftJoin('author_monument', 'monuments.id', '=', 'author_monument.monument_id')
+            ->leftJoin('authors', 'author_monument.author_id', '=', 'authors.id')
+            ->where('monuments.id', $id)
+            ->groupBy('monuments.id', 'monuments.name', 'monuments.description', 'monuments.location', 'monuments.created_at', 'monuments.updated_at')
+            ->first(['monuments.*', 'styles.name as style', 'authors.name as author']);
 
-        // Carga las relaciones de calificaciones
-        $topRatedMonuments->load('ratings');
+        if (!$monument) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Monumento no encontrado.'
+            ], 404);
+        }
 
-        return $topRatedMonuments;
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Información del monumento encontrada.',
+            'data' => $monument
+        ], 200);
     }
 
-    public function index(Request $request)
+    public function index()
     {
         $monuments = Monument::all();
 

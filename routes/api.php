@@ -15,9 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// ----------------------------  CUSTOMIZE QUERYS  ---------------------------- //
+// ----------------------------  CUSTOMIZE QUERYS  ----------------------------
 
 Route::get('monuments/all-info', [App\Http\Controllers\Api\MonumentController::class, 'allMonumentInfo']);
+Route::get('monuments/{id}', [MonumentController::class, 'findMonumentById']);
 
 Route::resource('/user', UserController::class);
 
