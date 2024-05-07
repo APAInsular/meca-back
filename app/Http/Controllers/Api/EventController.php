@@ -5,9 +5,72 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\EventStoreRequest;
 use App\Models\Event;
+use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
+    public function countTheEvents()
+    {
+        $currentTime = now();
+
+        $numberOfUpcomingEvents = DB::table('event_route')
+            ->join('routes', 'event_route.route_id', '=', 'routes.id')
+            ->join('route_user', 'routes.id', '=', 'route_user.route_id')
+            ->join('event_user', 'event_route.event_id', '=', 'event_user.event_id')
+            ->where('route_user.created_at', '>', $currentTime)
+            ->count();
+
+        echo "Number of upcoming events: " . $numberOfUpcomingEvents;
+    }
+
+    public function findNearestEvents()
+    {
+        $currentTime = now();
+
+        $upcomingEvents = DB::table('event_route')
+            ->join('routes', 'event_route.route_id', '=', 'routes.id')
+            ->join('route_user', 'routes.id', '=', 'route_user.route_id')
+            ->join('event_user', 'event_route.event_id', '=', 'event_user.event_id')
+            ->join('users', 'event_user.user_id', '=', 'users.id')
+            ->select('routes.name as route_name', 'routes.city', 'routes.distance')
+            ->where('route_user.created_at', '>', $currentTime)
+            ->orderBy('routes.distance')
+            ->get();
+
+        echo "Upcoming events sorted by distance:\n";
+        foreach ($upcomingEvents as $event) {
+            echo "Route: " . $event->route_name . "\n";
+            echo "City: " . $event->city . "\n";
+            echo "Distance: " . $event->distance . " km\n\n";
+        }
+    }
+
+    public function getInfoAboutUpcomingEvents()
+    {
+        $currentTime = now();
+
+        $upcomingEvents = DB::table('event_route')
+            ->join('routes', 'event_route.route_id', '=', 'routes.id')
+            ->join('route_user', 'routes.id', '=', 'route_user.route_id')
+            ->join('event_user', 'event_route.event_id', '=', 'event_user.event_id')
+            ->join('users', 'event_user.user_id', '=', 'users.id')
+            ->select('routes.name as route_name', 'routes.city', 'routes.distance', 'routes.time', 'users.name as user_name', 'users.email', 'route_user.created_at')
+            ->where('route_user.created_at', '>', $currentTime)
+            ->orderBy('route_user.created_at')
+            ->get();
+
+        foreach ($upcomingEvents as $event) {
+            echo "Upcoming event: \n";
+            echo "Route: " . $event->route_name . "\n";
+            echo "City: " . $event->city . "\n";
+            echo "Distance: " . $event->distance . " km\n";
+            echo "Estimated time: " . $event->time . "\n";
+            echo "User: " . $event->user_name . "\n";
+            echo "User email: " . $event->email . "\n";
+            echo "Created at: " . $event->created_at . "\n\n";
+        }
+    }
+
     public function index()
     {
         $events = Event::all();
