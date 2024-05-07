@@ -20,6 +20,7 @@ Route::resource('/user', UserController::class);
 Route::get('top-rated-monuments', [MonumentController::class, 'getTopRatedMonuments']);
 
 Route::get('users/points-category', [UserController::class, 'getUsersByPointsCategory']);
+//"SQLSTATE[HY000]: General error: 1364 Field 'name' doesn't have a default value (Connection: mysql, SQL: insert into `users` (`email`, `password`, `updated_at`, `created_at`) values (luiscliente1@luis.com, $2y$12$IPXD0FXSNzXeOHWTfsrszeRZgviwldlh4H.XlwYW8YZkr.2mny4mC, 2024-05-07 08:41:29, 2024-05-07 08:41:29))"
 
 ///////////////////////////////////////////////////////
 
