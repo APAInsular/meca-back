@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Like;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LikeController extends Controller
 {
@@ -13,6 +14,18 @@ class LikeController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
+    public function howManyLikes()
+    {
+        $likesCount = DB::table('likes')
+            ->select('likable_type', 'likable_id', DB::raw('count(*) as likes_count'))
+            ->groupBy('likable_type', 'likable_id')
+            ->get();
+
+        foreach ($likesCount as $like) {
+            printf("%s %d has %d likes\n", $like->likable_type, $like->likable_id, $like->likes_count);
+        }
+    }
+
     public function index()
     {
         $likes = Like::all();

@@ -6,9 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\CommentStoreRequest;
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
+    public function howManyComments()
+    {
+        $commentsCount = DB::table('comments')
+            ->select('commentable_type', 'commentable_id', DB::raw('count(*) as comments_count'))
+            ->groupBy('commentable_type', 'commentable_id')
+            ->get();
+
+        foreach ($commentsCount as $comment) {
+            echo $comment->commentable_type . ' ' . $comment->commentable_id . ' has ' . $comment->comments_count . ' comments' . PHP_EOL;
+        }
+
+    }
+
     public function index()
     {
         $comments = Comment::all();
