@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::resource('/user', UserController::class);
 
+<<<<<<< HEAD
 Route::get('top-rated-monuments', [MonumentController::class, 'getTopRatedMonuments']);
 
 Route::get('users/points-category', [UserController::class, 'getUsersByPointsCategory']);
@@ -24,6 +25,8 @@ Route::get('users/points-category', [UserController::class, 'getUsersByPointsCat
 
 ///////////////////////////////////////////////////////
 
+=======
+>>>>>>> f49a8085e82e03201687e6926fb3d8a5e841a6bd
 Route::get('q-rs/error', [App\Http\Controllers\Api\QRController::class, 'error']);
 Route::resource('q-rs', App\Http\Controllers\Api\QRController::class)->except('create', 'edit');
 
@@ -68,3 +71,10 @@ Route::resource('ratings', App\Http\Controllers\Api\RatingController::class)->ex
 
 Route::get('authors/error', [App\Http\Controllers\Api\AuthorController::class, 'error']);
 Route::resource('authors', App\Http\Controllers\Api\AuthorController::class)->except('create', 'edit');
+<<<<<<< HEAD
+=======
+
+// ----------------------------  CUSTOMIZE QUERYS  ----------------------------
+
+Route::get('monuments/all-info', [App\Http\Controllers\Api\MonumentController::class, 'allMonumentInfo']);
+>>>>>>> f49a8085e82e03201687e6926fb3d8a5e841a6bd

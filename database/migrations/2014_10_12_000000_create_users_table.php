@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('email')->unique()->required();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->required();
-            $table->string('confirm_password')->nullable(); // Added for password confirmation
+            $table->string('confirm_password')->required(); // Added for password confirmation
             $table->string('nationality')->required();
             $table->date('date_of_birth')->nullable();
             $table->string('location')->required();

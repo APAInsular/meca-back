@@ -81,12 +81,12 @@ class UserController extends Controller
             'first_surname' => 'required|string|max:255',
             'second_surname' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-            'confirm_password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8',
+            'confirm_password' => 'required|string|min:8',
             'nationality' => 'required|string|max:255',
             'location' => 'required|string|max:255',
         ]);
-    
+
         $user = User::create([
             'nickname' => $request->nickname,
             'name' => $request->name,
@@ -94,11 +94,11 @@ class UserController extends Controller
             'second_surname' => $request->second_surname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'confirm_password' => $request->password,
+            'confirm_password' => Hash::make($request->password),
             'nationality' => $request->nationality,
             'location' => $request->location,
         ]);
-    
+
         return response()->json([
             'status' => 'success',
             'message' => 'Usuario creado exitosamente.',
@@ -125,7 +125,7 @@ class UserController extends Controller
             ],
             'password' => 'string|min:8|confirmed',
         ]);
-    
+
         $user->update([
             'name' => $request->input('name', $user->name),
             'email' => $request->input('email', $user->email),
@@ -138,7 +138,7 @@ class UserController extends Controller
             'confirm_password' => $request->input('password', $user->password), // Add confirm_password field
             'profile_picture' => $request->input('profile_picture', $user->profile_picture),
         ]);
-    
+
         return response()->json([
             'status' => 'success',
             'message' => 'Usuario actualizado exitosamente.',
