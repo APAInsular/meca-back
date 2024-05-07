@@ -15,18 +15,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// ----------------------------  CUSTOMIZE QUERYS  ---------------------------- //
+
+Route::get('monuments/all-info', [App\Http\Controllers\Api\MonumentController::class, 'allMonumentInfo']);
+
 Route::resource('/user', UserController::class);
 
-<<<<<<< HEAD
 Route::get('top-rated-monuments', [MonumentController::class, 'getTopRatedMonuments']);
 
 Route::get('users/points-category', [UserController::class, 'getUsersByPointsCategory']);
-//"SQLSTATE[HY000]: General error: 1364 Field 'name' doesn't have a default value (Connection: mysql, SQL: insert into `users` (`email`, `password`, `updated_at`, `created_at`) values (luiscliente1@luis.com, $2y$12$IPXD0FXSNzXeOHWTfsrszeRZgviwldlh4H.XlwYW8YZkr.2mny4mC, 2024-05-07 08:41:29, 2024-05-07 08:41:29))"
 
-///////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-=======
->>>>>>> f49a8085e82e03201687e6926fb3d8a5e841a6bd
 Route::get('q-rs/error', [App\Http\Controllers\Api\QRController::class, 'error']);
 Route::resource('q-rs', App\Http\Controllers\Api\QRController::class)->except('create', 'edit');
 
@@ -71,10 +71,3 @@ Route::resource('ratings', App\Http\Controllers\Api\RatingController::class)->ex
 
 Route::get('authors/error', [App\Http\Controllers\Api\AuthorController::class, 'error']);
 Route::resource('authors', App\Http\Controllers\Api\AuthorController::class)->except('create', 'edit');
-<<<<<<< HEAD
-=======
-
-// ----------------------------  CUSTOMIZE QUERYS  ----------------------------
-
-Route::get('monuments/all-info', [App\Http\Controllers\Api\MonumentController::class, 'allMonumentInfo']);
->>>>>>> f49a8085e82e03201687e6926fb3d8a5e841a6bd
