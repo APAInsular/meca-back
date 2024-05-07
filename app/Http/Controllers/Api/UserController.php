@@ -76,17 +76,29 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'nickname' => 'required|string|max:255',
             'name' => 'required|string|max:255',
+            'first_surname' => 'required|string|max:255',
+            'second_surname' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|confirmed',
+            'confirm_password' => 'required|string|min:8|confirmed',
+            'nationality' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
         ]);
-
+    
         $user = User::create([
+            'nickname' => $request->nickname,
             'name' => $request->name,
+            'first_surname' => $request->first_surname,
+            'second_surname' => $request->second_surname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'confirm_password' => $request->password,
+            'nationality' => $request->nationality,
+            'location' => $request->location,
         ]);
-
+    
         return response()->json([
             'status' => 'success',
             'message' => 'Usuario creado exitosamente.',
@@ -111,21 +123,29 @@ class UserController extends Controller
                 'email',
                 Rule::unique('users', 'email')->ignore($user->id),
             ],
-            'password' => 'string|min:8',
+            'password' => 'string|min:8|confirmed',
         ]);
-
+    
         $user->update([
-            'name' => $request->name ?? $user->name,
-            'email' => $request->email ?? $user->email,
+            'name' => $request->input('name', $user->name),
+            'email' => $request->input('email', $user->email),
             'password' => isset($request->password) ? Hash::make($request->password) : $user->password,
+            'nickname' => $request->input('nickname', $user->nickname),
+            'first_surname' => $request->input('first_surname', $user->first_surname),
+            'second_surname' => $request->input('second_surname', $user->second_surname),
+            'nationality' => $request->input('nationality', $user->nationality),
+            'location' => $request->input('location', $user->location),
+            'confirm_password' => $request->input('password', $user->password), // Add confirm_password field
+            'profile_picture' => $request->input('profile_picture', $user->profile_picture),
         ]);
-
+    
         return response()->json([
             'status' => 'success',
             'message' => 'Usuario actualizado exitosamente.',
             'data' => $user
         ], 200);
     }
+
 
     public function destroy(User $user)
     {
