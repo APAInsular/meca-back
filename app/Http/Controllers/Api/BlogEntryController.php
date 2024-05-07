@@ -5,9 +5,41 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\BlogEntryStoreRequest;
 use App\Models\BlogEntry;
+use Illuminate\Support\Facades\DB;
 
 class BlogEntryController extends Controller
 {
+    public function getStatisticsFromPost()
+    {
+        $results = DB::select("
+        SELECT
+            blog_entries.id AS post_id,
+            COUNT(DISTINCT post_likes.id) AS post_likes_count,
+            COUNT(DISTINCT comments.id) AS comments_count,
+            SUM(CASE WHEN comment_likes.likable_type = 'comment' THEN 1 ELSE 0 END) AS comment_likes_count
+        FROM
+            blog_entries
+        LEFT JOIN
+            comments ON blog_entries.id = comments.commentable_id AND comments.commentable_type = 'post'
+        LEFT JOIN
+            likes AS post_likes ON blog_entries.id = post_likes.likable_id AND post_likes.likable_type = 'post'
+        LEFT JOIN
+            likes AS comment_likes ON comments.id = comment_likes.likable_id AND comment_likes.likable_type = 'comment'
+        GROUP BY
+            blog_entries.id;
+        ");
+        
+
+        foreach ($results as $result) {
+            $post_id = $result->post_id;
+            $post_likes_count = $result->post_likes_count;
+            $comments_count = $result->comments_count;
+            $comment_likes_count = $result->comment_likes_count;
+
+            echo "Post $post_id has $post_likes_count likes and $comments_count comments with $comment_likes_count likes on comments\n";
+        }
+    }
+
     public function index()
     {
         $blogEntries = BlogEntry::all();
