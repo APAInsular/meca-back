@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Rol extends Model
+class Role extends Model
 {
     use HasFactory;
 
@@ -16,7 +16,7 @@ class Rol extends Model
      * @var array
      */
     protected $fillable = [
-        'nombre',
+        'name', 'description'
     ];
 
     /**
