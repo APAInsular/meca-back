@@ -22,7 +22,14 @@ class MonumentController extends Controller
 
     public function findMonumentById($id)
     {
-        $monument = Monument::select('monuments.id', 'monuments.name', 'monuments.description', 'monuments.location', 'monuments.created_at', 'monuments.updated_at')
+        $monument = Monument::select(
+            'monuments.id', 
+            'monuments.title as name', 
+            'monuments.meaning as description', 
+            'monuments.address_id as location', 
+            'monuments.created_at', 
+            'monuments.updated_at'
+        )
             ->leftJoin('monument_style', 'monuments.id', '=', 'monument_style.monument_id')
             ->leftJoin('styles', 'monument_style.style_id', '=', 'styles.id')
             ->leftJoin('author_monument', 'monuments.id', '=', 'author_monument.monument_id')
@@ -44,7 +51,7 @@ class MonumentController extends Controller
             'data' => $monument
         ], 200);
     }
-    
+
     public function index()
     {
         $monuments = Monument::all();
