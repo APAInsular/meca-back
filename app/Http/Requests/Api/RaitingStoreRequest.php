@@ -25,4 +25,6 @@ class RatingStoreRequest extends FormRequest
             'rateable_id' => ['required', 'integer'],
         ];
     }
+
+    
 }
