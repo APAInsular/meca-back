@@ -32,6 +32,15 @@ class AuthorController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
+            'first_surname' => 'required|string|max:255',
+            'second_surname' => 'required|string|max:255',
+            'date_of_birth' => 'required|date',
+            'date_of_death' => 'nullable|date',
+            'location' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'description' => 'required|string',
+            'image' => 'required|string|max:255',
+            'video' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -42,7 +51,7 @@ class AuthorController extends Controller
             ], 400);
         }
 
-        $author = Author::create($request->only('name'));
+        $author = Author::create($request->all());
 
         return response()->json([
             'status' => 'success',
@@ -64,6 +73,15 @@ class AuthorController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
+            'first_surname' => 'required|string|max:255',
+            'second_surname' => 'required|string|max:255',
+            'date_of_birth' => 'required|date',
+            'date_of_death' => 'nullable|date',
+            'location' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'description' => 'required|string',
+            'image' => 'required|string|max:255',
+            'video' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -74,7 +92,7 @@ class AuthorController extends Controller
             ], 400);
         }
 
-        $author->update($request->only('name'));
+        $author->update($request->all());
 
         return response()->json([
             'status' => 'success',
@@ -82,6 +100,7 @@ class AuthorController extends Controller
             'data' => $author,
         ], 200);
     }
+
 
     public function destroy(Author $author)
     {
