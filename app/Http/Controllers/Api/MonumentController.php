@@ -9,15 +9,31 @@ use Illuminate\Support\Facades\Validator;
 
 class MonumentController extends Controller
 {
-    public function allMonumentInfo()
+    public function allMonumentInfo(Request $request)
     {
-        return Monument::select('monuments.id', 'monuments.title', 'monuments.meaning', 'monuments.address_id', 'monuments.created_at', 'monuments.updated_at', 'authors.name as author', 'styles.name as style')
-            ->leftJoin('monument_style', 'monuments.id', '=', 'monument_style.monument_id')
-            ->leftJoin('styles', 'monument_style.style_id', '=', 'styles.id')
-            ->leftJoin('author_monument', 'monuments.id', '=', 'author_monument.monument_id')
-            ->leftJoin('authors', 'author_monument.author_id', '=', 'authors.id')
-            ->groupBy('monuments.id', 'monuments.title', 'monuments.meaning', 'monuments.address_id', 'monuments.created_at', 'monuments.updated_at', 'authors.name', 'styles.name')
+        $user_id = $request->query('user_id');
+
+        // Obtener todos los monumentos con sus imágenes, autores, estilos y calificaciones
+        $monuments = Monument::with(['images', 'authors', 'style', 'ratings'])
+            ->withCount('ratings')
             ->get();
+
+        // Filtrar las calificaciones del usuario específico y calcular la media de las calificaciones para cada monumento
+        $monuments->each(function ($monument) use ($user_id) {
+            $user_rating = $monument->ratings->first(function ($rating) use ($user_id) {
+                return $rating->rateable_type == Monument::class && $rating->rateable_id == $monument->id && $rating->user_id == $user_id;
+            });
+
+            $total_ratings = $monument->ratings_count;
+            $total_points = $monument->ratings->sum('rating');
+            $average_rating = $total_points > 0 && $total_ratings > 0 ? $total_points / $total_ratings : 0;
+
+            $monument->average_rating = $average_rating;
+            $monument->has_liked = $user_rating !== null;
+            $monument->user_rating = $user_rating ? $user_rating->rating : null;
+        });
+
+        return $monuments;
     }
 
 

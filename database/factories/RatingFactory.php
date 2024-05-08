@@ -2,9 +2,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\Rating;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RatingFactory extends Factory
 {
@@ -17,11 +16,15 @@ class RatingFactory extends Factory
 
     /**
      * Define the model's default state.
+     *
+     * @return array
      */
-    public function definition(): array
+    public function definition()
     {
         return [
-            'rating' => $this->faker->randomElement(["1","2","3","4","5"]),
+            'rating' => $this->faker->numberBetween(1, 5), // Generar una calificación aleatoria entre 1 y 5
+            'rateable_type' => 'App\Models\Monument', // Tipo de modelo al que se está asignando la calificación
+            'rateable_id' => $this->faker->numberBetween(1, 50), // ID aleatorio de un monumento (ajusta el rango según tus necesidades)
         ];
     }
 }
