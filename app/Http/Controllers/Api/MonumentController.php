@@ -13,21 +13,34 @@ class MonumentController extends Controller
     {
         $user_id = $request->query('user_id');
 
-        // Obtener todos los monumentos con sus imágenes, autores, estilos y calificaciones
-        $monuments = Monument::with(['images', 'authors', 'style', 'ratings'])
+        // Obtener todos los monumentos con sus autores, estilos y calificaciones
+        $monuments = Monument::with(['authors', 'style', 'ratings'])
             ->withCount('ratings')
             ->get();
 
         // Filtrar las calificaciones del usuario específico y calcular la media de las calificaciones para cada monumento
         $monuments->each(function ($monument) use ($user_id) {
-            $user_rating = $monument->ratings->first(function ($rating) use ($user_id) {
-                return $rating->rateable_type == Monument::class && $rating->rateable_id == $monument->id && $rating->user_id == $user_id;
-            });
+            if ($monument != null) {
+                $user_rating = $monument->ratings->first(function ($rating) use ($user_id, $monument) {
+                    return (
+                        $rating->rateable_type == Monument::class &&
+                        $rating->rateable_id == $monument->id &&
+                        $rating->user_id == $user_id
+                    );
+                });
 
-            $total_ratings = $monument->ratings_count;
-            $total_points = $monument->ratings->sum('rating');
-            $average_rating = $total_points > 0 && $total_ratings > 0 ? $total_points / $total_ratings : 0;
+                // Calcular la suma de todas las calificaciones para este monumento
+                $total_points = $monument->ratings->sum('rating');
+                // Contar el número total de calificaciones
+                $total_ratings = $monument->ratings->count();
+                // Calcular el promedio
+                $average_rating = $total_ratings > 0 ? $total_points / $total_ratings : 0;
+            } else {
+                $total_ratings = 0;
+                $average_rating = 0;
+            }
 
+            // Establecer las propiedades en el monumento
             $monument->average_rating = $average_rating;
             $monument->has_liked = $user_rating !== null;
             $monument->user_rating = $user_rating ? $user_rating->rating : null;
