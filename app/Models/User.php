@@ -10,6 +10,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class User extends Authenticatable
 {
@@ -57,107 +61,81 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    /**
-     * Get the ratings associated with the user.
-     */
-    public function ratings(): BelongsToMany
+    // Relación: Usuario tiene un autor
+    public function authors(): BelongsToMany
     {
-        return $this->belongsToMany(Rating::class);
+        return $this->belongsToMany(Author::class);
     }
 
-    /**
-     * Get the monuments associated with the user.
-     */
-    public function monuments(): BelongsToMany
+    // Relación: Usuario tiene una dirección
+    public function addresses(): HasOne
     {
-        return $this->belongsToMany(Monument::class);
+        return $this->hasOne(Address::class);
     }
 
-    /**
-     * Get the location records associated with the user.
-     */
-    public function locations(): HasMany
-    {
-        return $this->hasMany(Address::class);
-    }
-
-    /**
-     * Get the events associated with the user.
-     */
-    public function events(): BelongsToMany
-    {
-        return $this->belongsToMany(Event::class);
-    }
-
-    /**
-     * Get the achievements associated with the user.
-     */
-    public function achievements(): BelongsToMany
-    {
-        return $this->belongsToMany(Achievement::class);
-    }
-
-    /**
-     * Get the sub-achievements associated with the user.
-     */
-    public function subAchievements(): BelongsToMany
-    {
-        return $this->belongsToMany(SubAchievement::class);
-    }
-
-    /**
-     * Get the comments associated with the user.
-     */
+    // Relación: Usuario realiza comentarios
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
 
-    /**
-     * Get the likes associated with the user.
-     */
+    // Relación: Usuario realiza me gusta
     public function likes(): HasMany
     {
         return $this->hasMany(Like::class);
     }
 
-    /**
-     * Get the blog entries associated with the user.
-     */
+    // Relación: Usuario realiza una entrada completa
     public function blogEntries(): HasMany
     {
         return $this->hasMany(BlogEntry::class);
     }
 
-    /**
-     * Get the roles associated with the user.
-     */
+    // Relación: Usuario completa un logro
+    public function achievements(): BelongsToMany
+    {
+        return $this->belongsToMany(Achievement::class);
+    }
+
+    // Relación: Usuario tiene un rol
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class);
     }
 
-    /**
-     * Get the saves associated with the user.
-     */
-    public function saves(): MorphToMany
+    // Relación: Usuario participa en un evento
+    public function events(): BelongsToMany
     {
-        return $this->morphToMany(Save::class, 'saveable');
+        return $this->belongsToMany(Event::class);
     }
 
-    /**
-     * Get the routes associated with the user.
-     */
-    public function routes(): BelongsToMany
+    // Relación: Usuario realiza una parada
+    public function stops(): HasMany
     {
-        return $this->belongsToMany(Route::class);
+        return $this->hasMany(Stop::class);
     }
 
-    /**
-     * Get the stops associated with the user.
-     */
-    public function stops(): BelongsToMany
+    // Relación: Usuario realiza una ruta
+    public function routes(): HasMany
     {
-        return $this->belongsToMany(Stop::class);
+        return $this->hasMany(Route::class);
+    }
+
+    // Relación: Usuario guarda una ruta
+    public function savedRoutes(): BelongsToMany
+    {
+        return $this->belongsToMany(Route::class, 'saved_routes');
+    }
+
+    // Relación: Usuario guarda una obra
+    public function savedMonuments(): BelongsToMany
+    {
+        return $this->belongsToMany(Monument::class, 'saved_monuments');
+    }
+
+    // Relación polimórfica: Usuario tiene un autor, entrada de blog o evento
+    public function favoriteable(): MorphTo
+    {
+        return $this->morphTo();
     }
 }
