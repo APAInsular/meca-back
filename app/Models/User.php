@@ -64,6 +64,10 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Author::class);
     }
+    public function ratings(): BelongsToMany
+    {
+        return $this->belongsToMany(Rating::class);
+    }
 
     // Relación: Usuario tiene una dirección
     public function addresses(): HasOne
