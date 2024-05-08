@@ -60,9 +60,9 @@ class User extends Authenticatable
     /**
      * Get the ratings associated with the user.
      */
-    public function ratings(): MorphToMany
+    public function ratings(): BelongsToMany
     {
-        return $this->morphToMany(Rating::class, 'rateable');
+        return $this->BelongsToMany(Rating::class);
     }
 
     /**
