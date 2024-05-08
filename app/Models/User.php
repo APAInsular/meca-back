@@ -11,6 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class User extends Authenticatable
 {
@@ -131,7 +132,7 @@ class User extends Authenticatable
     }
 
     // Relación polimórfica: Usuario tiene un autor, entrada de blog o evento
-    public function favoriteable(): morphTo
+    public function favoriteable(): MorphTo
     {
         return $this->morphTo();
     }
