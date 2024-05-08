@@ -11,23 +11,24 @@ class MonumentController extends Controller
 {
     public function allMonumentInfo()
     {
-        return Monument::select('monuments.id', 'monuments.name', 'monuments.description', 'monuments.location', 'monuments.created_at', 'monuments.updated_at')
+        return Monument::select('monuments.id', 'monuments.name', 'monuments.description', 'monuments.location', 'monuments.created_at', 'monuments.updated_at', 'authors.name as author', 'styles.name as style')
             ->leftJoin('monument_style', 'monuments.id', '=', 'monument_style.monument_id')
             ->leftJoin('styles', 'monument_style.style_id', '=', 'styles.id')
             ->leftJoin('author_monument', 'monuments.id', '=', 'author_monument.monument_id')
             ->leftJoin('authors', 'author_monument.author_id', '=', 'authors.id')
-            ->groupBy('monuments.id', 'monuments.name', 'monuments.description', 'monuments.location', 'monuments.created_at', 'monuments.updated_at')
-            ->get(['monuments.*', 'styles.name as style', 'authors.name as author']);
+            ->groupBy('monuments.id', 'monuments.name', 'monuments.description', 'monuments.location', 'monuments.created_at', 'monuments.updated_at', 'authors.name', 'styles.name')
+            ->get();
     }
+
 
     public function findMonumentById($id)
     {
         $monument = Monument::select(
-            'monuments.id', 
-            'monuments.title as name', 
-            'monuments.meaning as description', 
-            'monuments.address_id as location', 
-            'monuments.created_at', 
+            'monuments.id',
+            'monuments.title as name',
+            'monuments.meaning as description',
+            'monuments.address_id as location',
+            'monuments.created_at',
             'monuments.updated_at'
         )
             ->leftJoin('monument_style', 'monuments.id', '=', 'monument_style.monument_id')
