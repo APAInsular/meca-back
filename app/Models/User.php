@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -57,7 +60,7 @@ class User extends Authenticatable
     /**
      * Get the ratings associated with the user.
      */
-    public function ratings()
+    public function ratings(): MorphToMany
     {
         return $this->morphToMany(Rating::class, 'rateable');
     }
@@ -65,7 +68,7 @@ class User extends Authenticatable
     /**
      * Get the monuments associated with the user.
      */
-    public function monuments()
+    public function monuments(): BelongsToMany
     {
         return $this->belongsToMany(Monument::class);
     }
@@ -73,15 +76,15 @@ class User extends Authenticatable
     /**
      * Get the location records associated with the user.
      */
-    public function locations()
+    public function locations(): HasMany
     {
-        return $this->hasMany(Location::class);
+        return $this->hasMany(Address::class);
     }
 
     /**
      * Get the events associated with the user.
      */
-    public function events()
+    public function events(): BelongsToMany
     {
         return $this->belongsToMany(Event::class);
     }
@@ -89,7 +92,7 @@ class User extends Authenticatable
     /**
      * Get the achievements associated with the user.
      */
-    public function achievements()
+    public function achievements(): BelongsToMany
     {
         return $this->belongsToMany(Achievement::class);
     }
@@ -97,7 +100,7 @@ class User extends Authenticatable
     /**
      * Get the sub-achievements associated with the user.
      */
-    public function subAchievements()
+    public function subAchievements(): BelongsToMany
     {
         return $this->belongsToMany(SubAchievement::class);
     }
@@ -105,7 +108,7 @@ class User extends Authenticatable
     /**
      * Get the comments associated with the user.
      */
-    public function comments()
+    public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
@@ -113,7 +116,7 @@ class User extends Authenticatable
     /**
      * Get the likes associated with the user.
      */
-    public function likes()
+    public function likes(): HasMany
     {
         return $this->hasMany(Like::class);
     }
@@ -121,7 +124,7 @@ class User extends Authenticatable
     /**
      * Get the blog entries associated with the user.
      */
-    public function blogEntries()
+    public function blogEntries(): HasMany
     {
         return $this->hasMany(BlogEntry::class);
     }
@@ -129,7 +132,7 @@ class User extends Authenticatable
     /**
      * Get the roles associated with the user.
      */
-    public function roles()
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class);
     }
@@ -137,7 +140,7 @@ class User extends Authenticatable
     /**
      * Get the saves associated with the user.
      */
-    public function saves()
+    public function saves(): MorphToMany
     {
         return $this->morphToMany(Save::class, 'saveable');
     }
@@ -145,7 +148,7 @@ class User extends Authenticatable
     /**
      * Get the routes associated with the user.
      */
-    public function routes()
+    public function routes(): BelongsToMany
     {
         return $this->belongsToMany(Route::class);
     }
@@ -153,7 +156,7 @@ class User extends Authenticatable
     /**
      * Get the stops associated with the user.
      */
-    public function stops()
+    public function stops(): BelongsToMany
     {
         return $this->belongsToMany(Stop::class);
     }
