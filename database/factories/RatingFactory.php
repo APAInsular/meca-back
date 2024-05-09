@@ -24,7 +24,7 @@ class RatingFactory extends Factory
         return [
             'rating' => $this->faker->numberBetween(1, 5), // Generar una calificación aleatoria entre 1 y 5
             'rateable_type' => 'App\Models\Monument', // Tipo de modelo al que se está asignando la calificación
-            'rateable_id' => $this->faker->numberBetween(1, 50), // ID aleatorio de un monumento (ajusta el rango según tus necesidades)
+            'rateable_id' => $this->faker->numberBetween(1, 5), // ID aleatorio de un monumento (ajusta el rango según tus necesidades)
         ];
     }
 }

@@ -4,50 +4,81 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Monument;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class MonumentController extends Controller
 {
-    public function allMonumentInfo(Request $request)
+    public function allMonumentInfo()
     {
-        $user_id = $request->query('user_id');
+        $query = "
+            SELECT 
+                m.id AS monument_id,
+                m.title AS monument_title,
+                m.type AS monument_type,
+                m.creation_date AS monument_creation_date,
+                m.main_image AS monument_main_image,
+                m.latitude AS monument_latitude,
+                m.longitude AS monument_longitude,
+                m.meaning AS monument_meaning,
+                JSON_ARRAYAGG(JSON_OBJECT('id', a.id, 'name', a.name)) AS authors,
+                GROUP_CONCAT(s.name) AS styles,
+                (
+                    SELECT COUNT(rating)
+                    FROM ratings r
+                    WHERE r.rateable_id = m.id
+                ) AS total_ratings,
+                (
+                    SELECT ROUND(COALESCE(AVG(rating), 0), 2)
+                    FROM ratings r
+                    WHERE r.rateable_id = m.id
+                ) AS average_rating
+            FROM 
+                monuments m
+            LEFT JOIN 
+                author_monument am ON m.id = am.monument_id
+            LEFT JOIN 
+                authors a ON am.author_id = a.id
+            LEFT JOIN 
+                monument_style ms ON m.id = ms.monument_id
+            LEFT JOIN 
+                styles s ON ms.style_id = s.id
+            GROUP BY 
+                m.id
+        ";
 
-        // Obtener todos los monumentos con sus autores, estilos y calificaciones
-        $monuments = Monument::with(['authors', 'style', 'ratings'])
-            ->withCount('ratings')
-            ->get();
+        $monuments = DB::select($query);
 
-        // Filtrar las calificaciones del usuario específico y calcular la media de las calificaciones para cada monumento
-        $monuments->each(function ($monument) use ($user_id) {
-            if ($monument != null) {
-                $user_rating = $monument->ratings->first(function ($rating) use ($user_id, $monument) {
-                    return (
-                        $rating->rateable_type == Monument::class &&
-                        $rating->rateable_id == $monument->id &&
-                        $rating->user_id == $user_id
-                    );
-                });
+        $result = collect($monuments)->map(function ($monument) {
+            $authors = json_decode($monument->authors, true);
+            $authors = array_map(function ($author) {
+                return [
+                    'id' => $author['id'],
+                    'name' => $author['name']
+                ];
+            }, $authors);
 
-                // Calcular la suma de todas las calificaciones para este monumento
-                $total_points = $monument->ratings->sum('rating');
-                // Contar el número total de calificaciones
-                $total_ratings = $monument->ratings->count();
-                // Calcular el promedio
-                $average_rating = $total_ratings > 0 ? $total_points / $total_ratings : 0;
-            } else {
-                $total_ratings = 0;
-                $average_rating = 0;
-            }
-
-            // Establecer las propiedades en el monumento
-            $monument->average_rating = $average_rating;
-            $monument->has_liked = $user_rating !== null;
-            $monument->user_rating = $user_rating ? $user_rating->rating : null;
+            return [
+                'id' => $monument->monument_id,
+                'title' => $monument->monument_title,
+                'type' => $monument->monument_type,
+                'creation_date' => $monument->monument_creation_date,
+                'main_image' => $monument->monument_main_image,
+                'latitude' => $monument->monument_latitude,
+                'longitude' => $monument->monument_longitude,
+                'meaning' => $monument->monument_meaning,
+                'authors' => $authors,
+                'styles' => $monument->styles ? explode(',', $monument->styles) : [],
+                'total_ratings' => $monument->total_ratings,
+                'average_rating' => $monument->average_rating,
+            ];
         });
 
-        return $monuments;
+        return $result;
     }
+
 
 
     public function findMonumentById($id)

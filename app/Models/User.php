@@ -10,14 +10,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -65,6 +63,10 @@ class User extends Authenticatable
     public function authors(): BelongsToMany
     {
         return $this->belongsToMany(Author::class);
+    }
+    public function ratings(): BelongsToMany
+    {
+        return $this->belongsToMany(Rating::class);
     }
 
     // Relación: Usuario tiene una dirección
