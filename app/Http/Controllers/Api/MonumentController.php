@@ -79,38 +79,92 @@ class MonumentController extends Controller
         return $result;
     }
 
-
-
-    public function findMonumentById($id)
+    public function findMonumentById($monumentId)
     {
-        $monument = Monument::select(
-            'monuments.id',
-            'monuments.title as name',
-            'monuments.meaning as description',
-            'monuments.address_id as location',
-            'monuments.created_at',
-            'monuments.updated_at'
-        )
-            ->leftJoin('monument_style', 'monuments.id', '=', 'monument_style.monument_id')
-            ->leftJoin('styles', 'monument_style.style_id', '=', 'styles.id')
-            ->leftJoin('author_monument', 'monuments.id', '=', 'author_monument.monument_id')
-            ->leftJoin('authors', 'author_monument.author_id', '=', 'authors.id')
-            ->where('monuments.id', $id)
-            ->groupBy('monuments.id', 'monuments.title', 'monuments.meaning', 'monuments.address_id', 'monuments.created_at', 'monuments.updated_at')
-            ->first(['monuments.*', 'styles.name as style', 'authors.name as author']);
+        // Obtener la información básica del monumento
+        $monument = DB::table('Monuments')->where('id', $monumentId)->first();
 
-        if (!$monument) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Monumento no encontrado.'
-            ], 404);
+        // Obtener los autores asociados al monumento
+        $authors = DB::table('Authors')
+            ->join('author_monument', 'Authors.id', '=', 'author_monument.author_id')
+            ->where('author_monument.monument_id', $monumentId)
+            ->select('Authors.id', 'Authors.name')
+            ->get();
+
+        // Obtener los estilos asociados al monumento
+        $styles = DB::table('Styles')
+            ->join('monument_style', 'Styles.id', '=', 'monument_style.style_id')
+            ->where('monument_style.monument_id', $monumentId)
+            ->select('Styles.id', 'Styles.name')
+            ->get();
+
+        // Obtener los comentarios asociados al monumento, incluyendo información completa de los usuarios y likes
+        $comments = DB::table('Comments')
+            ->join('Users', 'Comments.user_id', '=', 'Users.id')
+            ->leftJoin('likes', function ($join) {
+                $join->on('Comments.id', '=', 'likes.likable_id')
+                    ->where('likes.likable_type', '=', 'Comment');
+            })
+            ->where('Comments.commentable_id', $monumentId)
+            ->where('Comments.commentable_type', 'Monument')
+            ->select(
+                'Comments.id',
+                'Comments.content',
+                'Comments.created_at',
+                'Users.nickname',
+                'Users.profile_picture',
+                DB::raw('COUNT(likes.id) as total_likes')
+            )
+            ->groupBy('Comments.id')
+            ->get();
+
+        // Obtener la información de los likes de cada comentario
+        foreach ($comments as $comment) {
+            $likes = DB::table('likes')
+                ->join('Users', 'likes.user_id', '=', 'Users.id')
+                ->where('likes.likable_id', $comment->id)
+                ->where('likes.likable_type', 'Comment')
+                ->get();
+
+            // Estructurar los likes como objetos de usuario
+            $comment->likes = $likes->map(function ($like) {
+                return [
+                    'id' => $like->id,
+                    'user' => [
+                        'id' => $like->id,
+                        'nickname' => $like->nickname,
+                        'profile_picture' => $like->profile_picture
+                        // Agrega aquí cualquier otro campo de usuario que desees incluir
+                    ]
+                ];
+            });
+
+            // Estructurar el usuario del comentario como un objeto de usuario
+            $comment->user = [
+                'id' => $comment->id,
+                'nickname' => $comment->nickname,
+                'profile_picture' => $comment->profile_picture
+                // Agrega aquí cualquier otro campo de usuario que desees incluir
+            ];
         }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Información del monumento encontrada.',
-            'data' => $monument
-        ], 200);
+        // Construir el arreglo final con el formato requerido
+        $response = [
+            'id' => $monument->id,
+            'title' => $monument->title,
+            'type' => $monument->type,
+            'creation_date' => $monument->creation_date,
+            'main_image' => $monument->main_image,
+            'latitude' => $monument->latitude,
+            'longitude' => $monument->longitude,
+            'meaning' => $monument->meaning,
+            'authors' => $authors,
+            'styles' => $styles,
+            'comments' => $comments,
+            // Aquí puedes agregar cualquier otra información que necesites del monumento
+        ];
+
+        return response()->json($response);
     }
 
     public function index()

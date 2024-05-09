@@ -77,7 +77,7 @@ class Monument extends Model
         return $this->morphMany(Rating::class, 'rateable');
     }
 
-    public function style(): BelongsToMany
+    public function styles(): BelongsToMany
     {
         return $this->belongsToMany(Style::class);
     }
