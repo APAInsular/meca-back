@@ -96,4 +96,9 @@ class Monument extends Model
     {
         return $this->morphToMany(Save::class, 'saveable');
     }
+
+    public function monument_Author()
+    {
+        return $this->belongsToMany(Author::class, 'author_monument');
+    }
 }

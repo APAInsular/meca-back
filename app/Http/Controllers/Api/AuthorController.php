@@ -9,6 +9,35 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthorController extends Controller
 {
+    public function getMonumentsByAuthor($authorId)
+    {
+        $author = Author::with('monuments')->find($authorId);
+    
+        // Verifica si se cargaron correctamente los monumentos
+        if ($authorId->monuments->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No se encontraron monumentos para este autor vale vale.',
+            ], 404);
+        }
+
+
+        if ($author->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No se encontraron autor.',
+            ], 404);
+        }
+    
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Información del autor y sus monumentos encontrada.',
+            'data' => $author,
+        ], 200);
+    }
+
+
+
     public function index()
     {
         $authors = Author::all();
