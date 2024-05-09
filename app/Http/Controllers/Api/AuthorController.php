@@ -11,30 +11,29 @@ class AuthorController extends Controller
 {
     public function getMonumentsByAuthor($authorId)
     {
-        $author = Author::with('monuments')->find($authorId);
+        try {
+            // Busca al autor por su ID
+            $author = Author::findOrFail($authorId);
+            
+            // Obtiene los monumentos asociados al autor
+            $monuments = $author->monuments;
     
-        // Verifica si se cargaron correctamente los monumentos
-        if ($authorId->monuments->isEmpty()) {
+            // Retorna la respuesta JSON con los monumentos encontrados
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Monumentos del autor encontrados.',
+                'data' => $monuments,
+            ], 200);
+        } catch (\Exception $e) {
+            // Si ocurre algún error al buscar al autor, se retorna una respuesta de error
             return response()->json([
                 'status' => 'error',
-                'message' => 'No se encontraron monumentos para este autor vale vale.',
+                'message' => 'Error al buscar los monumentos del autor.',
+                'error' => $e->getMessage(),
             ], 404);
         }
-
-
-        if ($author->isEmpty()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'No se encontraron autor.',
-            ], 404);
-        }
-    
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Información del autor y sus monumentos encontrada.',
-            'data' => $author,
-        ], 200);
     }
+    
 
 
 

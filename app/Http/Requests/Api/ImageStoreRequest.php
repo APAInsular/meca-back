@@ -21,7 +21,6 @@ class ImageStoreRequest extends FormRequest
     {
         return [
             'url' => ['required', 'string'],
-            'url' => ['required', 'string'],
         ];
     }
 }

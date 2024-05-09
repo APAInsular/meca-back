@@ -55,7 +55,7 @@ class AchievementController extends Controller
         ], 200);
     }
 
-    public function update( Achievement $achievement)
+    public function update(Achievement $achievement)
     {
         if (is_null($achievement)) {
             return response()->json([
