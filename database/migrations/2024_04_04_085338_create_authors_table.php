@@ -13,7 +13,16 @@ return new class extends Migration
     {
         Schema::create('authors', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->required();
+            $table->string('first_surname')->required();
+            $table->string('second_surname')->required();
+            $table->date('date_of_birth')->required();
+            $table->date('date_of_death')->nullable();
+            $table->string('location')->required();
+            $table->string('country')->required();
+            $table->text('description')->required();
+            $table->string('image')->required();
+            $table->string('video')->nullable();
             $table->timestamps();
         });
     }

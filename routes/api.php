@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\MonumentController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -72,3 +73,10 @@ Route::resource('ratings', App\Http\Controllers\Api\RatingController::class)->ex
 
 Route::get('authors/error', [App\Http\Controllers\Api\AuthorController::class, 'error']);
 Route::resource('authors', App\Http\Controllers\Api\AuthorController::class)->except('create', 'edit');
+
+// ----------------------------  CUSTOMIZE QUERYS  ----------------------------
+
+Route::get('monuments/all-info', [App\Http\Controllers\Api\MonumentController::class, 'allMonumentInfo']);
+Route::get('monuments/{id}', [MonumentController::class, 'findMonumentById']);
+
+Route::get('authors/mon/{authorId}', [AuthorController::class, 'getMonumentsByAuthor']);

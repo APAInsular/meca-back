@@ -18,6 +18,15 @@ class Author extends Model
      */
     protected $fillable = [
         'name',
+        'first_surname',
+        'second_surname',
+        'date_of_birth',
+        'date_of_death',
+        'location',
+        'country',
+        'description',
+        'image',
+        'video',
     ];
 
     /**
@@ -37,5 +46,9 @@ class Author extends Model
     public function saves(): MorphToMany
     {
         return $this->morphToMany(Save::class, 'saveable');
+    }
+    public function author_Monument()
+    {
+        return $this->belongsToMany(Monument::class, 'author_monument');
     }
 }
