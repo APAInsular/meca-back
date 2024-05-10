@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\MonumentController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AvatarController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -73,3 +75,9 @@ Route::get('monuments/{id}', [MonumentController::class, 'findMonumentById']);
 
 Route::get('authors/mon/{authorId}', [AuthorController::class, 'getMonumentsByAuthor']);
 
+
+// Ruta para obtener el usuario al que pertenece un avatar
+Route::get('/avatar/{id}/user', [AvatarController::class, 'getUserForAvatar']);
+
+// Ruta para obtener toda la información del avatar con sus relaciones
+Route::get('/avatar/{id}/details', [AvatarController::class, 'getAvatarWithRelations']);

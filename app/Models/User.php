@@ -123,6 +123,12 @@ class User extends Authenticatable
         return $this->hasMany(Route::class);
     }
 
+    // Relación: Usuario tinen un avatar
+    public function avatars(): HasOne
+    {
+        return $this->hasOne(Avatar::class);
+    }
+
     // Relación: Usuario guarda una ruta
     public function savedRoutes(): BelongsToMany
     {
@@ -140,4 +146,5 @@ class User extends Authenticatable
     {
         return $this->morphTo();
     }
+
 }
