@@ -35,6 +35,9 @@ Route::resource('q-rs', App\Http\Controllers\Api\QRController::class)->except('c
 Route::get('monuments/error', [App\Http\Controllers\Api\MonumentController::class, 'error']);
 Route::resource('monuments', App\Http\Controllers\Api\MonumentController::class)->except('create', 'edit');
 
+Route::get('likes/error', [App\Http\Controllers\Api\LikeController::class, 'error']);
+Route::resource('likes', App\Http\Controllers\Api\LikeController::class)->except('create', 'edit');
+
 Route::get('blog-entries/error', [App\Http\Controllers\Api\BlogEntryController::class, 'error']);
 Route::resource('blog-entries', App\Http\Controllers\Api\BlogEntryController::class)->except('create', 'edit');
 

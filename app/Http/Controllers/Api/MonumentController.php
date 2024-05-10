@@ -79,8 +79,10 @@ class MonumentController extends Controller
         return $result;
     }
 
-    public function findMonumentById($monumentId)
+    public function findMonumentById(Request $request, $monumentId)
     {
+        $userId = $request->userId;
+
         // Obtener la información básica del monumento
         $monument = DB::table('Monuments')->where('id', $monumentId)->first();
 
@@ -120,24 +122,20 @@ class MonumentController extends Controller
 
         // Obtener la información de los likes de cada comentario
         foreach ($comments as $comment) {
-            $likes = DB::table('likes')
-                ->join('Users', 'likes.user_id', '=', 'Users.id')
-                ->where('likes.likable_id', $comment->id)
-                ->where('likes.likable_type', 'Comment')
-                ->get();
+            // Verificar si el usuario ha dado "me gusta" al comentario actual
+            $userLike = DB::table('likes')
+                ->where('likable_id', $comment->id)
+                ->where('likable_type', 'Comment')
+                ->where('user_id', $userId)
+                ->first(); // Obtener la primera coincidencia si existe
 
             // Estructurar los likes como objetos de usuario
-            $comment->likes = $likes->map(function ($like) {
-                return [
-                    'id' => $like->id,
-                    'user' => [
-                        'id' => $like->id,
-                        'nickname' => $like->nickname,
-                        'profile_picture' => $like->profile_picture
-                        // Agrega aquí cualquier otro campo de usuario que desees incluir
-                    ]
-                ];
-            });
+            $comment->likes = DB::table('likes')
+                ->where('likable_id', $comment->id)
+                ->where('likable_type', 'Comment')
+                ->join('Users', 'likes.user_id', '=', 'Users.id')
+                ->select('likes.id', 'Users.id as user_id', 'Users.nickname', 'Users.profile_picture')
+                ->get();
 
             // Estructurar el usuario del comentario como un objeto de usuario
             $comment->user = [
@@ -146,7 +144,15 @@ class MonumentController extends Controller
                 'profile_picture' => $comment->profile_picture
                 // Agrega aquí cualquier otro campo de usuario que desees incluir
             ];
+
+            // Agregar la propiedad user_like al comentario con el ID del like y del usuario
+            $comment->user_like = $userLike ? (object)[
+                'value' => true,
+                'like_id' => $userLike->id,
+                'user_id' => $userLike->user_id
+            ] : (object)['value' => false];
         }
+
 
         // Construir el arreglo final con el formato requerido
         $response = [
