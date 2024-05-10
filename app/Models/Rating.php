@@ -18,6 +18,7 @@ class Rating extends Model
      */
     protected $fillable = [
         'rating',
+        'rateable',
     ];
 
     /**
