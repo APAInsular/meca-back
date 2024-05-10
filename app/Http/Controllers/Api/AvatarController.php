@@ -10,44 +10,34 @@ use Illuminate\Support\Facades\DB;
 class AvatarController extends Controller
 {
 
-        // Función para obtener el usuario al que pertenece el avatar
-        public function getUserForAvatar($avatarId)
-        {
-            $user = DB::table('avatars')
-                ->join('users', 'avatars.user_id', '=', 'users.id')
-                ->select('users.*')
-                ->where('avatars.id', $avatarId)
-                ->first();
-    
-            return $user;
-        }
-    
-        // Función para obtener toda la información del avatar con sus relaciones
-        public function getAvatarWithRelations($avatarId)
-        {
-            $avatar = DB::table('avatars')
-                ->join('sexes', 'avatars.sex_id', '=', 'sex_id')
-                ->leftJoin('hairs', 'sexes.id', '=', 'hairs.sex_id')
-                ->leftJoin('pants', 'sexes.id', '=', 'pants.sex_id')
-                ->leftJoin('bodies', 'sexes.id', '=', 'bodies.sex_id')
-                ->leftJoin('shoes', 'sexes.id', '=', 'shoes.sex_id')
-                ->leftJoin('tshirts', 'sexes.id', '=', 'tshirts.sex_id')
-                ->leftJoin('accessories', 'sexes.id', '=', 'accessories.sex_id')
-                ->select(
-                    'avatars.*',
-                    'sexes.category as sex_category',
-                    'hairs.category as hair_category',
-                    'pants.category as pant_category',
-                    'bodies.category as body_category',
-                    'shoes.category as shoe_category',
-                    'tshirts.category as tshirt_category',
-                    'accessories.category as accessory_category'
-                )
-                ->where('avatars.id', $avatarId)
-                ->first();
-    
-            return $avatar;
-        }
+    // Función para obtener el usuario al que pertenece el avatar
+    public function getUserForAvatar($avatarId)
+    {
+        $user = DB::table('avatars')
+            ->join('users', 'avatars.user_id', '=', 'users.id')
+            ->join('sexes', 'avatars.sex_id', '=', 'sex_id')
+            ->leftJoin('hairs', 'sexes.id', '=', 'hairs.sex_id')
+            ->leftJoin('pants', 'sexes.id', '=', 'pants.sex_id')
+            ->leftJoin('bodies', 'sexes.id', '=', 'bodies.sex_id')
+            ->leftJoin('shoes', 'sexes.id', '=', 'shoes.sex_id')
+            ->leftJoin('tshirts', 'sexes.id', '=', 'tshirts.sex_id')
+            ->leftJoin('accessories', 'sexes.id', '=', 'accessories.sex_id')
+            ->select(
+                'users.id',
+                'avatars.*',
+                'sexes.category as sex_category',
+                'hairs.category as hair_category',
+                'pants.category as pant_category',
+                'bodies.category as body_category',
+                'shoes.category as shoe_category',
+                'tshirts.category as tshirt_category',
+                'accessories.category as accessory_category'
+            )
+            ->where('avatars.id', $avatarId)
+            ->first();
+
+        return $user;
+    }
 
     public function index()
     {
