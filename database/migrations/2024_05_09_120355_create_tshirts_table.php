@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('tshirts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('sex_id');
-            $table->string('brand');
-            $table->string('size');
+            $table->string('category');
+            $table->string('subcategory');
             $table->string('url');
             $table->string('url_selection');
             $table->timestamps();
