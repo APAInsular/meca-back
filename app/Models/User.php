@@ -64,6 +64,12 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Author::class);
     }
+
+    public function monuments(): BelongsToMany
+    {
+        return $this->belongsToMany(Monument::class);
+    }
+
     public function ratings(): BelongsToMany
     {
         return $this->belongsToMany(Rating::class);

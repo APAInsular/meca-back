@@ -36,10 +36,6 @@ class Route extends Model
         'distance' => 'float',
     ];
 
-    public function monuments(): BelongsToMany
-    {
-        return $this->belongsToMany(Monument::class);
-    }
 
     public function events(): BelongsToMany
     {
