@@ -18,7 +18,8 @@ class Rating extends Model
      */
     protected $fillable = [
         'rating',
-        'rateable',
+        'rateable_type',
+        'rateable_id',
     ];
 
     /**
