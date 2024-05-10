@@ -31,6 +31,10 @@ class Rating extends Model
         'id' => 'integer',
     ];
 
+    protected $unique = [
+        ['rating', 'rateable_type', 'rateable_id'],
+    ];
+
     public function rateable(): MorphTo
     {
         return $this->morphTo();

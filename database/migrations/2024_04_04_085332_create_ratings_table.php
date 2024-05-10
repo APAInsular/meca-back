@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('ratings', function (Blueprint $table) {
             $table->id();
-            $table->enum('rating', ["1","2","3","4","5"]);
+            $table->enum('rating', ["1", "2", "3", "4", "5"]);
             $table->morphs('rateable');
             $table->timestamps();
+
+            // Agregar restricción única en las columnas user_id, likable_type, y likable_id
+            $table->unique(['rating', 'rateable_type', 'rateable_id']);
         });
     }
 
