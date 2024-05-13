@@ -16,8 +16,12 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->morphs('likable');
             $table->timestamps();
+    
+            // Agregar restricción única en las columnas user_id, likable_type, y likable_id
+            $table->unique(['user_id', 'likable_type', 'likable_id']);
         });
     }
+    
 
     /**
      * Reverse the migrations.

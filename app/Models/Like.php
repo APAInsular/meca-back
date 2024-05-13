@@ -32,6 +32,15 @@ class Like extends Model
         'user_id' => 'integer',
     ];
 
+    /**
+     * The attributes that should be unique together.
+     *
+     * @var array
+     */
+    protected $unique = [
+        ['user_id', 'likable_type', 'likable_id'],
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
