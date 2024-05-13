@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\MonumentController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\LikeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +27,11 @@ Route::resource('/user', UserController::class);
 Route::get('top-rated-monuments', [MonumentController::class, 'getTopRatedMonuments']);
 
 Route::get('users/points-category', [UserController::class, 'getUsersByPointsCategory']);
+
+Route::get('/comments/{commentId}/likes', [LikeController::class, 'likesByComment']);
+
+Route::get('/comments/{commentId}/user-like/{userId}', [LikeController::class, 'getUserLikeForComment']);
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
