@@ -20,6 +20,8 @@ class Stop extends Model
     protected $fillable = [
         'name',
         'route_id',
+        'stoppable_type',
+        'stoppable_id',
     ];
 
     /**
@@ -36,6 +38,11 @@ class Stop extends Model
     {
         return $this->belongsTo(Route::class);
     }
+
+    protected $unique = [
+        ['rating', 'rateable_type', 'rateable_id'],
+    ];
+    
 
     public function stoppable(): MorphTo
     {
