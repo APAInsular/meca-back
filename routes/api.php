@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\LikeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AvatarController;
-
+use App\Http\Controllers\Api\RouteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,3 +98,30 @@ Route::get('/avatar/{id}/user', [AvatarController::class, 'getUserForAvatar']);
 
 // Ruta para obtener toda la información del avatar con sus relaciones
 Route::get('/avatar/{id}/details', [AvatarController::class, 'getAvatarWithRelations']);
+
+//Monumentos filtrados por la localidad
+Route::get('/monuments/filter-by-locality', [MonumentController::class, 'filterByLocality']);
+
+// Definir la ruta para obtener toda la información de una ruta por ID
+Route::get('/routes/{id}/info', [RouteController::class, 'allInfoRoute']);
+
+// Ruta para obtener todas las paradas de una misma ruta con paginación
+Route::get('/routes/{routeId}/stops', [RouteController::class, 'stopsByRoute']);
+
+// Ruta para obtener todas las rutas agrupadas por estado con paginación
+Route::get('/routes/grouped-by-status', [RouteController::class, 'routesGroupedByStatus']);
+
+// Ruta para obtener todas las rutas filtradas por el autor de una obra que se establece como parada, con paginación
+Route::get('/routes/by-author/{authorId}', [RouteController::class, 'routesByAuthor']);
+
+// Ruta para obtener todas las rutas filtradas por una obra que se establece como parada, con paginación
+Route::get('/routes/by-monument/{monumentId}', [RouteController::class, 'routesByMonument']);
+
+// Ruta para obtener el número total de calificaciones de una ruta y la media de esas calificaciones
+Route::get('/routes/{routeId}/ratings', [RouteController::class, 'routeRatings']);
+
+// Ruta para obtener dos rutas destacadas según las mejores calificaciones
+Route::get('/routes/highlighted', [RouteController::class, 'highlightedRoutes']);
+
+// Ruta para filtrar rutas por localidad, obra, estilo de obra, autor/res de la obra y calificación de la ruta con paginación
+Route::post('/routes/filter', [RouteController::class, 'filterRoutes']);

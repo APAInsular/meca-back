@@ -207,6 +207,34 @@ class MonumentController extends Controller
         return $topMonuments;
     }
 
+    public function filterByLocality(Request $request)
+    {
+        $locality = $request->input('locality');
+
+        // Consulta SQL para obtener los monumentos por localidad
+        $monuments = DB::select(
+            'SELECT monuments.* 
+            FROM monuments
+            INNER JOIN addresses ON monuments.address_id = addresses.id
+            WHERE addresses.city = ?',
+            [$locality]
+        );
+
+        if (empty($monuments)) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'No se encontraron obras en la localidad especificada',
+                'data' => [],
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Obras encontradas en la localidad especificada',
+            'data' => $monuments,
+        ], 200);
+    }
+
     public function index()
     {
         $monuments = Monument::all();

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PantRequest;
-use Illuminate\Http\Request;
 use App\Models\Pant;
 
 class PantController extends Controller
