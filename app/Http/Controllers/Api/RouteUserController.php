@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AccessoryRequest;
 use App\Http\Requests\RouteUserRequest;
-use App\Models\Accessory;
 use App\Models\RouteUser;
 
 class RouteUserAccessoryController extends Controller
