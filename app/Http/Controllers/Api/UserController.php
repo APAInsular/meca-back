@@ -28,30 +28,32 @@ class UserController extends Controller
 
     public function getUsersByPointsCategory()
     {
-        $users = User::select('id', 'name', 'last_name', 'second_last_name', 'profile_picture', 'points')
+        $users = User::select('id', 'name', 'first_surname', 'second_surname', 'profile_picture', 'points')
             ->get()
             ->groupBy(function ($user) {
-                if ($user->points > 125000) {
-                    return 'top';
-                } elseif ($user->points > 100000) {
-                    return 'platino';
-                } elseif ($user->points > 50000) {
-                    return 'oro';
-                } elseif ($user->points > 30000) {
-                    return 'plata';
-                } elseif ($user->points > 10000) {
-                    return 'bronce';
-                } else {
-                    return 'otros';
+                switch (true) {
+                    case $user->points > 125000:
+                        return 'top';
+                    case $user->points > 100000:
+                        return 'platino';
+                    case $user->points > 50000:
+                        return 'oro';
+                    case $user->points > 30000:
+                        return 'plata';
+                    case $user->points > 10000:
+                        return 'bronce';
+                    default:
+                        return 'otros';
                 }
             })
             ->map(function ($group) {
+                // Format the user data for each group
                 return $group->map(function ($user) {
                     return [
                         'id' => $user->id,
                         'name' => $user->name,
-                        'last_name' => $user->last_name,
-                        'second_last_name' => $user->second_last_name,
+                        'first_surname' => $user->first_surname,
+                        'second_surname' => $user->second_surname,
                         'profile_picture' => $user->profile_picture,
                         'points' => $user->points,
                     ];

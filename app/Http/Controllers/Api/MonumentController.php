@@ -173,6 +173,40 @@ class MonumentController extends Controller
         return response()->json($response);
     }
 
+    public function getTopRatedMonuments()
+    {
+        $topMonuments = DB::table('monuments')
+            ->select(
+                'monuments.*',
+                DB::raw('ROUND(COALESCE(AVG(ratings.rating), 0), 2) AS avg_rating'),
+                DB::raw('JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    "id", authors.id,
+                    "name", authors.name
+                )
+            ) AS authors')
+            )
+            ->leftJoin('ratings', function ($join) {
+                $join->on('monuments.id', '=', 'ratings.rateable_id')
+                    ->where('ratings.rateable_type', '=', 'App\Models\Monument');
+            })
+            ->leftJoin('author_monument', 'monuments.id', '=', 'author_monument.monument_id')
+            ->leftJoin('authors', 'author_monument.author_id', '=', 'authors.id')
+            ->groupBy('monuments.id')
+            ->orderBy('avg_rating', 'DESC')
+            ->limit(4)
+            ->get();
+
+        // Decodificar el JSON en cada fila de $topMonuments y eliminar entradas de autores duplicados
+        foreach ($topMonuments as $monument) {
+            $monument->authors = json_decode($monument->authors);
+            // Eliminar duplicados usando una combinación de array_values y array_unique
+            $monument->authors = array_values(array_unique($monument->authors, SORT_REGULAR));
+        }
+
+        return $topMonuments;
+    }
+
     public function index()
     {
         $monuments = Monument::all();
