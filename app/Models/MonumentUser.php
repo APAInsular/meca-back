@@ -12,5 +12,4 @@ class MonumentUser extends Pivot
         'monument_id',
         'user_id',
     ];
-
 }
