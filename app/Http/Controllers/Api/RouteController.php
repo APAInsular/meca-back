@@ -104,21 +104,21 @@ class RouteController extends Controller
         ], 200);
     }
 
-    public function routeRatings($routeId)
-    {
-        $ratings = DB::table('Routes')
-            FROM routes
-            ->select(DB::raw('COUNT(*) as total_ratings'), DB::raw('AVG(rating) as average_rating'))
-            ->where('rateable_type', 'Route')
-            ->where('rateable_id', $routeId)
-            ->first();
+    // public function routeRatings($routeId)
+    // {
+    //     $ratings = DB::table('Routes')
+    //         FROM routes
+    //         ->select(DB::raw('COUNT(*) as total_ratings'), DB::raw('AVG(rating) as average_rating'))
+    //         ->where('rateable_type', 'Route')
+    //         ->where('rateable_id', $routeId)
+    //         ->first();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Route ratings retrieved successfully',
-            'data' => $ratings,
-        ], 200);
-    }
+    //     return response()->json([
+    //         'status' => 'success',
+    //         'message' => 'Route ratings retrieved successfully',
+    //         'data' => $ratings,
+    //     ], 200);
+    // }
 
     public function highlightedRoutes()
     {

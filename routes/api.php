@@ -108,3 +108,5 @@ Route::get('/routes/highlighted', [RouteController::class, 'highlightedRoutes'])
 
 // Ruta para filtrar rutas por localidad, obra, estilo de obra, autor/res de la obra y calificación de la ruta con paginación
 Route::post('/routes/filter', [RouteController::class, 'filterRoutes']);
+
+Route::get('/monuments/filter/{page?}', [MonumentController::class, 'filterMonuments']);

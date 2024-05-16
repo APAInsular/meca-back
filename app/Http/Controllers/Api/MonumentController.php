@@ -10,6 +10,46 @@ use Illuminate\Support\Facades\Validator;
 
 class MonumentController extends Controller
 {
+
+    public function filterMonuments(Request $request, $page = 1)
+{
+    $query = DB::table('monuments')
+        ->leftJoin('ratings', function ($join) {
+            $join->on('monuments.id', '=', 'ratings.rateable_id')
+                 ->where('ratings.rateable_type', 'Monument');
+        })
+        ->leftJoin('author_monument', 'monuments.id', '=', 'author_monument.monument_id')
+        ->leftJoin('authors', 'authors.id', '=', 'author_monument.author_id')
+        ->leftJoin('styles', 'monuments.style_id', '=', 'styles.id')
+        ->leftJoin('addresses', 'monuments.address_id', '=', 'addresses.id')
+        ->select('monuments.*', 'styles.name as style_name', 'addresses.location', 'authors.name as author_name', DB::raw('AVG(ratings.rating) as average_rating'))
+        ->groupBy('monuments.id', 'styles.name', 'addresses.location', 'authors.name');
+
+    if ($request->has('location')) {
+        $query->where('addresses.location', 'like', '%' . $request->location . '%');
+    }
+    if ($request->has('style_id')) {
+        $query->where('monuments.style_id', $request->style_id);
+    }
+    if ($request->has('author_id')) {
+        $query->where('authors.id', $request->author_id);
+    }
+    if ($request->has('creation_year')) {
+        $query->whereYear('monuments.creation_date', $request->creation_year);
+    }
+    if ($request->has('rating')) {
+        $query->having('average_rating', '>=', $request->rating);
+    }
+
+    $monuments = $query->paginate(20, ['*'], 'page', $page);
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Filtered monuments retrieved successfully',
+        'data' => $monuments,
+    ], 200);
+}
+
     public function allMonumentInfo()
     {
         return Monument::select('monuments.id', 'monuments.name', 'monuments.description', 'monuments.location', 'monuments.created_at', 'monuments.updated_at', 'authors.name as author', 'styles.name as style')
