@@ -39,7 +39,7 @@ class RouteController extends Controller
     {
         $stops = DB::table('stops')
             ->where('route_id', $routeId)
-            ->paginate(20, ['*'], 'page', $page);
+            ->paginate(20, 'page', $page);
 
         return response()->json([
             'status' => 'success',
