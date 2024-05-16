@@ -13,25 +13,60 @@ class RouteController extends Controller
 
     public function allInfoRoute($id)
     {
+        // Obtener la información de la ruta
         $routeInfo = DB::table('routes')
-        ->select(
-            'routes.*',
-            'stops.*',
-            'ratings.*'
-        )
-        ->leftJoin('stops', 'routes.id', '=', 'stops.route_id')
-        ->leftJoin('ratings', function ($join) {
-            $join->on('routes.id', '=', 'ratings.rateable_id')
-                ->where('ratings.rateable_type', 'Route');
-        })
-        ->where('routes.id', $id)
-        ->groupBy('routes.name', 'routes.id', 'stops.id', 'ratings.id')
-        ->get();
+            ->select('routes.*')
+            ->where('routes.id', $id)
+            ->first();
+
+        if (!$routeInfo) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Route not found',
+            ], 404);
+        }
+
+        // Obtener la información de las paradas (stops)
+        $stops = DB::table('stops')
+            ->select('stops.*', 'monuments.title as monument_title')
+            ->leftJoin('monuments', function ($join) {
+                $join->on('stops.stoppable_id', '=', 'monuments.id')
+                    ->where('stops.stoppable_type', 'App\Models\Monument');
+            })
+            ->where('stops.route_id', $id)
+            ->get();
+
+        // Organizar la información de las paradas en un array
+        $stopsData = [];
+        foreach ($stops as $stop) {
+            // Consulta para obtener el título del monumento
+            $monumentTitle = DB::table('monuments')
+                ->where('id', $stop->stoppable_id)
+                ->value('title');
+            $monumentLatitud = DB::table('monuments')
+                ->where('id', $stop->stoppable_id)
+                ->value('latitude');
+            $monumentLongitud = DB::table('monuments')
+                ->where('id', $stop->stoppable_id)
+                ->value('longitude');
+
+            $stopsData[] = [
+                'stop_id' => $stop->id,
+                'stoppable_type' => $stop->stoppable_type,
+                'stoppable_id' => $stop->stoppable_id,
+                'monument_title' => $monumentTitle,
+                'monument_latitud' => $monumentLatitud,
+                'monument_longitud' => $monumentLongitud,
+                // Agrega aquí los campos específicos de la tabla de la parada que deseas incluir
+                // Por ejemplo, si es un monumento, puedes incluir los campos específicos de la tabla de monumentos
+            ];
+        }
 
         return response()->json([
             'status' => 'success',
             'message' => 'Route information retrieved successfully',
-            'data' => $routeInfo,
+            'route_info' => $routeInfo,
+            'stops' => $stopsData,
         ], 200);
     }
 
@@ -66,8 +101,9 @@ class RouteController extends Controller
     {
         $perPage = 20;
         $offset = ($page - 1) * $perPage;
-    
-        $routes = DB::select('
+
+        $routes = DB::select(
+            '
             SELECT routes.*
             FROM routes
             JOIN stops ON routes.id = stops.route_id
@@ -75,18 +111,18 @@ class RouteController extends Controller
             JOIN author_monument ON monuments.id = author_monument.monument_id
             JOIN authors ON authors.id = author_monument.author_id
             WHERE authors.id = :authorId
-            LIMIT :limit OFFSET :offset', 
+            LIMIT :limit OFFSET :offset',
             ['authorId' => $authorId, 'limit' => $perPage, 'offset' => $offset]
         );
-    
+
         return response()->json([
             'status' => 'success',
             'message' => 'Routes by author retrieved successfully',
             'data' => $routes,
         ], 200);
     }
-    
-    
+
+
 
     public function routesByMonument($monumentId, $page = 1)
     {
@@ -104,21 +140,21 @@ class RouteController extends Controller
         ], 200);
     }
 
-    public function routeRatings($routeId)
-    {
-        $ratings = DB::table('Routes')
-            FROM routes
-            ->select(DB::raw('COUNT(*) as total_ratings'), DB::raw('AVG(rating) as average_rating'))
-            ->where('rateable_type', 'Route')
-            ->where('rateable_id', $routeId)
-            ->first();
+    // public function routeRatings($routeId)
+    // {
+    //     $ratings = DB::table('Routes')
+    //         ->FROM routes
+    //         ->select(DB::raw('COUNT(*) as total_ratings'), DB::raw('AVG(rating) as average_rating'))
+    //         ->where('rateable_type', 'Route')
+    //         ->where('rateable_id', $routeId)
+    //         ->first();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Route ratings retrieved successfully',
-            'data' => $ratings,
-        ], 200);
-    }
+    //     return response()->json([
+    //         'status' => 'success',
+    //         'message' => 'Route ratings retrieved successfully',
+    //         'data' => $ratings,
+    //     ], 200);
+    // }
 
     public function highlightedRoutes()
     {

@@ -22,6 +22,28 @@ class AuthorController extends Controller
         return response()->json($monuments);
     }
 
+    public function getTopRatedAuthors()
+    {
+        $topAuthors = DB::table('authors')
+            ->select(
+                'authors.*',
+                DB::raw('COUNT(author_monument.monument_id) AS monument_count'),
+                DB::raw('ROUND(COALESCE(AVG(ratings.rating), 0), 2) AS avg_rating')
+            )
+            ->leftJoin('author_monument', 'authors.id', '=', 'author_monument.author_id')
+            ->leftJoin('monuments', 'author_monument.monument_id', '=', 'monuments.id')
+            ->leftJoin('ratings', function ($join) {
+                $join->on('monuments.id', '=', 'ratings.rateable_id')
+                    ->where('ratings.rateable_type', '=', 'App\Models\Monument');
+            })
+            ->groupBy('authors.id')
+            ->orderBy('avg_rating', 'DESC')
+            ->limit(4)
+            ->get();
+
+        return $topAuthors;
+    }
+
     public function index()
     {
         $authors = Author::all();

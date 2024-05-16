@@ -21,12 +21,13 @@ use App\Http\Controllers\Api\RouteController;
 
 // ----------------------------  CUSTOMIZE QUERYS  ----------------------------
 
-Route::get('monuments/all-info', [App\Http\Controllers\Api\MonumentController::class, 'allMonumentInfo']);
+Route::get('monuments/all-info', [MonumentController::class, 'allMonumentInfo']);
 Route::get('monuments/{id}', [MonumentController::class, 'findMonumentById']);
 
 Route::resource('/user', UserController::class);
 
 Route::get('top-rated-monuments', [MonumentController::class, 'getTopRatedMonuments']);
+Route::get('top-rated-authors', [AuthorController::class, 'getTopRatedAuthors']);
 
 Route::get('users/points-category', [UserController::class, 'getUsersByPointsCategory']);
 
@@ -34,6 +35,7 @@ Route::get('/comments/{commentId}/likes', [LikeController::class, 'likesByCommen
 
 Route::get('/comments/{commentId}/user-like/{userId}', [LikeController::class, 'getUserLikeForComment']);
 
+Route::get('/check-qr/{userId}/{monumentId}', [MonumentController::class, 'checkQrAndUpdatePoints']);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -92,7 +94,6 @@ Route::get('monuments/{monumentId}', [MonumentController::class, 'findMonumentBy
 
 Route::get('authors/mon/{authorId}', [AuthorController::class, 'getMonumentsByAuthor']);
 
-
 // Ruta para obtener el usuario al que pertenece un avatar
 Route::get('/avatar/{id}/user', [AvatarController::class, 'getUserForAvatar']);
 
@@ -103,7 +104,7 @@ Route::get('/avatar/{id}/details', [AvatarController::class, 'getAvatarWithRelat
 Route::get('/monuments/filter-by-locality', [MonumentController::class, 'filterByLocality']);
 
 // Definir la ruta para obtener toda la información de una ruta por ID
-Route::get('/routes/{id}/info', [RouteController::class, 'allInfoRoute']);
+Route::get('/routes/{id}/all-info', [RouteController::class, 'allInfoRoute']);
 
 // Ruta para obtener todas las paradas de una misma ruta con paginación
 Route::get('/routes/{routeId}/stops', [RouteController::class, 'stopsByRoute']);

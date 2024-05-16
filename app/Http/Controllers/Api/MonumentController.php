@@ -173,6 +173,40 @@ class MonumentController extends Controller
         return response()->json($response);
     }
 
+    public function checkQrAndUpdatePoints(Request $request, $userId, $monumentId)
+    {
+        // Buscar la última entrada en la tabla user_monument para este usuario y monumento
+        $lastEntry = UserMonument::where('user_id', $userId)
+            ->where('monument_id', $monumentId)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if ($lastEntry) {
+            // Calcular la diferencia de tiempo entre la última entrada y ahora
+            $now = Carbon::now();
+            $lastEntryDate = Carbon::parse($lastEntry->created_at);
+            $hoursDifference = $now->diffInHours($lastEntryDate);
+
+            if ($hoursDifference < 24) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No han pasado 24 horas desde la última vez que escaneaste este QR.'
+                ]);
+            }
+        }
+
+        // Si no hay entradas anteriores o han pasado más de 24 horas, crear una nueva entrada
+        UserMonument::create([
+            'user_id' => $userId,
+            'monument_id' => $monumentId,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Puntos añadidos al usuario.'
+        ]);
+    }
+
     public function getTopRatedMonuments()
     {
         $topMonuments = DB::table('monuments')
