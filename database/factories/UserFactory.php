@@ -24,22 +24,19 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'nickname' => $this->faker->userName(),
-            'name' => $this->faker->name(),
-            'first_surname' => $this->faker->firstName(),
-            'second_surname' => $this->faker->lastName(),
-            'profile_picture' => null,
-            'email' => $this->faker->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => Hash::make('password'), // Encripta la contraseña
-            'confirm_password' => Hash::make('password'),
-            'nationality' => $this->faker->countryCode(),
-            'date_of_birth' => $this->faker->date(),
-            'location' => $this->faker->city(),
-            'postal_code' => $this->faker->postcode(),
-            'points' => $this->faker->numberBetween(0, 150000),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'nickname' => $this->faker->userName,
+            'name' => $this->faker->firstName,
+            'first_surname' => $this->faker->lastName,
+            'second_surname' => $this->faker->lastName,
+            'profile_picture' => $this->faker->imageUrl(640, 480, 'people', true, 'Faker'),
+            'email' => $this->faker->unique()->safeEmail,
+            'password' => bcrypt('password'),
+            'confirm_password' => bcrypt('password'),
+            'nationality' => $this->faker->country,
+            'date_of_birth' => $this->faker->date('Y-m-d', '2003-01-01'),
+            'location' => $this->faker->city,
+            'postal_code' => $this->faker->postcode,
+            'points' => $this->faker->numberBetween(0, 1000),
         ];
     }
 
