@@ -13,6 +13,46 @@ class LikeController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
+
+    public function getUserLikeForComment($commentId, $userId)
+    {
+        // Buscar el like del usuario para el comentario específico
+        $userLike = Like::where('likable_id', $commentId)
+            ->where('likable_type', 'Comment')
+            ->where('user_id', $userId)
+            ->first();
+
+        // Si se encuentra el like del usuario, devolver el resultado
+        if ($userLike) {
+            return response()->json([
+                'like_id' => $userLike->id,
+                'liked' => true
+            ]);
+        } else {
+            // Si no se encuentra el like del usuario, devolver falso
+            return response()->json([
+                'liked' => false
+            ]);
+        }
+    }
+
+    public function likesByComment($commentId)
+    {
+        // Obtener todos los likes asociados a un comentario específico
+        $likes = Like::where('likable_id', $commentId)
+            ->where('likable_type', 'Comment')
+            ->get();
+
+        // Calcular el número total de likes
+        $totalLikes = $likes->count();
+
+        // Devolver los likes y el número total de likes en formato JSON
+        return response()->json([
+            'likes' => $likes,
+            'total_likes' => $totalLikes
+        ]);
+    }
+
     public function index()
     {
         $likes = Like::all();

@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
@@ -74,10 +73,10 @@ class Monument extends Model
 
     public function ratings(): MorphMany
     {
-        return $this->morphMany(Rating::class, 'ratingable');
+        return $this->morphMany(Rating::class, 'rateable');
     }
 
-    public function style(): BelongsToMany
+    public function styles(): BelongsToMany
     {
         return $this->belongsToMany(Style::class);
     }

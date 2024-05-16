@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class BodyRequest extends FormRequest
+class RouteUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,8 @@ class BodyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'sex_id' => 'required|exists:sexes,id',
-            'category' => 'required|string|max:255',
-            'url' => 'required|string|max:255',
-            'url_selection' => 'required|string|max:255',
+            'route_id' => 'required|exists:routes,id', // La ruta debe existir en la tabla routes
+            'user_id' => 'required|exists:users,id', // El usuario debe existir en la tabla users
         ];
     }
 }

@@ -4,52 +4,270 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Monument;
+use App\Models\MonumentUser;
+use Carbon\Carbon;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class MonumentController extends Controller
 {
     public function allMonumentInfo()
     {
-        return Monument::select('monuments.id', 'monuments.name', 'monuments.description', 'monuments.location', 'monuments.created_at', 'monuments.updated_at', 'authors.name as author', 'styles.name as style')
-            ->leftJoin('monument_style', 'monuments.id', '=', 'monument_style.monument_id')
-            ->leftJoin('styles', 'monument_style.style_id', '=', 'styles.id')
-            ->leftJoin('author_monument', 'monuments.id', '=', 'author_monument.monument_id')
-            ->leftJoin('authors', 'author_monument.author_id', '=', 'authors.id')
-            ->groupBy('monuments.id', 'monuments.name', 'monuments.description', 'monuments.location', 'monuments.created_at', 'monuments.updated_at', 'authors.name', 'styles.name')
-            ->get();
+        $query = "
+            SELECT 
+                m.id AS monument_id,
+                m.title AS monument_title,
+                m.type AS monument_type,
+                m.creation_date AS monument_creation_date,
+                m.main_image AS monument_main_image,
+                m.latitude AS monument_latitude,
+                m.longitude AS monument_longitude,
+                m.meaning AS monument_meaning,
+                JSON_ARRAYAGG(JSON_OBJECT('id', a.id, 'name', a.name)) AS authors,
+                GROUP_CONCAT(s.name) AS styles,
+                (
+                    SELECT COUNT(rating)
+                    FROM ratings r
+                    WHERE r.rateable_id = m.id
+                ) AS total_ratings,
+                (
+                    SELECT ROUND(COALESCE(AVG(rating), 0), 2)
+                    FROM ratings r
+                    WHERE r.rateable_id = m.id
+                ) AS average_rating
+            FROM 
+                monuments m
+            LEFT JOIN 
+                author_monument am ON m.id = am.monument_id
+            LEFT JOIN 
+                authors a ON am.author_id = a.id
+            LEFT JOIN 
+                monument_style ms ON m.id = ms.monument_id
+            LEFT JOIN 
+                styles s ON ms.style_id = s.id
+            GROUP BY 
+                m.id
+        ";
+
+        $monuments = DB::select($query);
+
+        $result = collect($monuments)->map(function ($monument) {
+            $authors = json_decode($monument->authors, true);
+            $authors = array_map(function ($author) {
+                return [
+                    'id' => $author['id'],
+                    'name' => $author['name']
+                ];
+            }, $authors);
+
+            return [
+                'id' => $monument->monument_id,
+                'title' => $monument->monument_title,
+                'type' => $monument->monument_type,
+                'creation_date' => $monument->monument_creation_date,
+                'main_image' => $monument->monument_main_image,
+                'latitude' => $monument->monument_latitude,
+                'longitude' => $monument->monument_longitude,
+                'meaning' => $monument->monument_meaning,
+                'authors' => $authors,
+                'styles' => $monument->styles ? explode(',', $monument->styles) : [],
+                'total_ratings' => $monument->total_ratings,
+                'average_rating' => $monument->average_rating,
+            ];
+        });
+
+        return $result;
     }
 
-
-    public function findMonumentById($id)
+    public function findMonumentById(Request $request, $monumentId)
     {
-        $monument = Monument::select(
-            'monuments.id',
-            'monuments.title as name',
-            'monuments.meaning as description',
-            'monuments.address_id as location',
-            'monuments.created_at',
-            'monuments.updated_at'
-        )
-            ->leftJoin('monument_style', 'monuments.id', '=', 'monument_style.monument_id')
-            ->leftJoin('styles', 'monument_style.style_id', '=', 'styles.id')
+        $userId = $request->userId;
+
+        // Obtener la información básica del monumento
+        $monument = DB::table('Monuments')->where('id', $monumentId)->first();
+
+        // Obtener los autores asociados al monumento
+        $authors = DB::table('Authors')
+            ->join('author_monument', 'Authors.id', '=', 'author_monument.author_id')
+            ->where('author_monument.monument_id', $monumentId)
+            ->select('Authors.id', 'Authors.name')
+            ->get();
+
+        // Obtener los estilos asociados al monumento
+        $styles = DB::table('Styles')
+            ->join('monument_style', 'Styles.id', '=', 'monument_style.style_id')
+            ->where('monument_style.monument_id', $monumentId)
+            ->select('Styles.id', 'Styles.name')
+            ->get();
+
+        // Obtener los comentarios asociados al monumento, incluyendo información completa de los usuarios y likes
+        $comments = DB::table('Comments')
+            ->join('Users', 'Comments.user_id', '=', 'Users.id')
+            ->leftJoin('likes', function ($join) {
+                $join->on('Comments.id', '=', 'likes.likable_id')
+                    ->where('likes.likable_type', '=', 'Comment');
+            })
+            ->where('Comments.commentable_id', $monumentId)
+            ->where('Comments.commentable_type', 'Monument')
+            ->select(
+                'Comments.id',
+                'Comments.content',
+                'Comments.created_at',
+                'Users.nickname',
+                'Users.profile_picture',
+                DB::raw('COUNT(likes.id) as total_likes')
+            )
+            ->groupBy('Comments.id')
+            ->get();
+
+        // Obtener la información de los likes de cada comentario
+        foreach ($comments as $comment) {
+            // Verificar si el usuario ha dado "me gusta" al comentario actual
+            $userLike = DB::table('likes')
+                ->where('likable_id', $comment->id)
+                ->where('likable_type', 'Comment')
+                ->where('user_id', $userId)
+                ->first(); // Obtener la primera coincidencia si existe
+
+            // Estructurar los likes como objetos de usuario
+            $comment->likes = DB::table('likes')
+                ->where('likable_id', $comment->id)
+                ->where('likable_type', 'Comment')
+                ->join('Users', 'likes.user_id', '=', 'Users.id')
+                ->select('likes.id', 'Users.id as user_id', 'Users.nickname', 'Users.profile_picture')
+                ->get();
+
+            // Estructurar el usuario del comentario como un objeto de usuario
+            $comment->user = [
+                'id' => $comment->id,
+                'nickname' => $comment->nickname,
+                'profile_picture' => $comment->profile_picture
+                // Agrega aquí cualquier otro campo de usuario que desees incluir
+            ];
+
+            // Agregar la propiedad user_like al comentario con el ID del like y del usuario
+            $comment->user_like = $userLike ? (object)[
+                'value' => true,
+                'like_id' => $userLike->id,
+                'user_id' => $userLike->user_id
+            ] : (object)['value' => false];
+        }
+
+
+        // Construir el arreglo final con el formato requerido
+        $response = [
+            'id' => $monument->id,
+            'title' => $monument->title,
+            'type' => $monument->type,
+            'creation_date' => $monument->creation_date,
+            'main_image' => $monument->main_image,
+            'latitude' => $monument->latitude,
+            'longitude' => $monument->longitude,
+            'meaning' => $monument->meaning,
+            'authors' => $authors,
+            'styles' => $styles,
+            'comments' => $comments,
+            // Aquí puedes agregar cualquier otra información que necesites del monumento
+        ];
+
+        return response()->json($response);
+    }
+
+    public function checkQrAndUpdatePoints(Request $request, $userId, $monumentId)
+    {
+        // Buscar la última entrada en la tabla user_monument para este usuario y monumento
+        $lastEntry = MonumentUser::where('user_id', $userId)
+            ->where('monument_id', $monumentId)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if ($lastEntry) {
+            // Calcular la diferencia de tiempo entre la última entrada y ahora
+            $now = Carbon::now();
+            $lastEntryDate = Carbon::parse($lastEntry->created_at);
+            $hoursDifference = $now->diffInHours($lastEntryDate);
+
+            if ($hoursDifference < 24) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No han pasado 24 horas desde la última vez que escaneaste este QR.'
+                ]);
+            }
+        }
+
+        // Si no hay entradas anteriores o han pasado más de 24 horas, crear una nueva entrada
+        MonumentUser::create([
+            'user_id' => $userId,
+            'monument_id' => $monumentId,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Puntos añadidos al usuario.'
+        ]);
+    }
+
+    public function getTopRatedMonuments()
+    {
+        $topMonuments = DB::table('monuments')
+            ->select(
+                'monuments.*',
+                DB::raw('ROUND(COALESCE(AVG(ratings.rating), 0), 2) AS avg_rating'),
+                DB::raw('JSON_ARRAYAGG(
+                JSON_OBJECT(
+                    "id", authors.id,
+                    "name", authors.name
+                )
+            ) AS authors')
+            )
+            ->leftJoin('ratings', function ($join) {
+                $join->on('monuments.id', '=', 'ratings.rateable_id')
+                    ->where('ratings.rateable_type', '=', 'App\Models\Monument');
+            })
             ->leftJoin('author_monument', 'monuments.id', '=', 'author_monument.monument_id')
             ->leftJoin('authors', 'author_monument.author_id', '=', 'authors.id')
-            ->where('monuments.id', $id)
-            ->groupBy('monuments.id', 'monuments.name', 'monuments.description', 'monuments.location', 'monuments.created_at', 'monuments.updated_at')
-            ->first(['monuments.*', 'styles.name as style', 'authors.name as author']);
+            ->groupBy('monuments.id')
+            ->orderBy('avg_rating', 'DESC')
+            ->limit(4)
+            ->get();
 
-        if (!$monument) {
+        // Decodificar el JSON en cada fila de $topMonuments y eliminar entradas de autores duplicados
+        foreach ($topMonuments as $monument) {
+            $monument->authors = json_decode($monument->authors);
+            // Eliminar duplicados usando una combinación de array_values y array_unique
+            $monument->authors = array_values(array_unique($monument->authors, SORT_REGULAR));
+        }
+
+        return $topMonuments;
+    }
+
+    public function filterByLocality(Request $request)
+    {
+        $locality = $request->input('locality');
+
+        // Consulta SQL para obtener los monumentos por localidad
+        $monuments = DB::select(
+            'SELECT monuments.* 
+            FROM monuments
+            INNER JOIN addresses ON monuments.address_id = addresses.id
+            WHERE addresses.city = ?',
+            [$locality]
+        );
+
+        if (empty($monuments)) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Monumento no encontrado.'
+                'status' => 'failed',
+                'message' => 'No se encontraron obras en la localidad especificada',
+                'data' => [],
             ], 404);
         }
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Información del monumento encontrada.',
-            'data' => $monument
+            'message' => 'Obras encontradas en la localidad especificada',
+            'data' => $monuments,
         ], 200);
     }
 
@@ -63,13 +281,13 @@ class MonumentController extends Controller
                 'message' => '¡No se encontraron monumentos!',
                 'data' => [],
             ], 404);
+        } else {
+            return response()->json([
+                'status' => 'success',
+                'message' => '¡Monumentos encontrados!',
+                'data' => $monuments,
+            ], 200);
         }
-
-        return response()->json([
-            'status' => 'success',
-            'message' => '¡Monumentos encontrados!',
-            'data' => $monuments,
-        ], 200);
     }
 
     public function store(Request $request)

@@ -25,6 +25,45 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
+
+    public function getUsersByPointsCategory()
+    {
+        $users = User::select('id', 'name', 'first_surname', 'second_surname', 'profile_picture', 'points')
+            ->get()
+            ->groupBy(function ($user) {
+                switch (true) {
+                    case $user->points > 125000:
+                        return 'top';
+                    case $user->points > 100000:
+                        return 'platino';
+                    case $user->points > 50000:
+                        return 'oro';
+                    case $user->points > 30000:
+                        return 'plata';
+                    case $user->points > 10000:
+                        return 'bronce';
+                    default:
+                        return 'otros';
+                }
+            })
+            ->map(function ($group) {
+                // Format the user data for each group
+                return $group->map(function ($user) {
+                    return [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'first_surname' => $user->first_surname,
+                        'second_surname' => $user->second_surname,
+                        'profile_picture' => $user->profile_picture,
+                        'points' => $user->points,
+                    ];
+                })->toArray();
+            });
+
+        return $users;
+    }
+
+
     public function index()
     {
         $users = User::all();
@@ -44,12 +83,12 @@ class UserController extends Controller
             'first_surname' => 'required|string|max:255',
             'second_surname' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-            'confirm_password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8',
+            'confirm_password' => 'required|string|min:8',
             'nationality' => 'required|string|max:255',
             'location' => 'required|string|max:255',
         ]);
-    
+
         $user = User::create([
             'nickname' => $request->nickname,
             'name' => $request->name,
@@ -57,11 +96,11 @@ class UserController extends Controller
             'second_surname' => $request->second_surname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'confirm_password' => $request->password,
+            'confirm_password' => Hash::make($request->password),
             'nationality' => $request->nationality,
             'location' => $request->location,
         ]);
-    
+
         return response()->json([
             'status' => 'success',
             'message' => 'Usuario creado exitosamente.',
@@ -88,7 +127,7 @@ class UserController extends Controller
             ],
             'password' => 'string|min:8|confirmed',
         ]);
-    
+
         $user->update([
             'name' => $request->input('name', $user->name),
             'email' => $request->input('email', $user->email),
@@ -101,7 +140,7 @@ class UserController extends Controller
             'confirm_password' => $request->input('password', $user->password), // Add confirm_password field
             'profile_picture' => $request->input('profile_picture', $user->profile_picture),
         ]);
-    
+
         return response()->json([
             'status' => 'success',
             'message' => 'Usuario actualizado exitosamente.',

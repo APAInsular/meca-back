@@ -5,37 +5,44 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Author;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class AuthorController extends Controller
 {
     public function getMonumentsByAuthor($authorId)
     {
-        try {
-            // Busca al autor por su ID
-            $author = Author::findOrFail($authorId);
-            
-            // Obtiene los monumentos asociados al autor
-            $monuments = $author->monuments;
-    
-            // Retorna la respuesta JSON con los monumentos encontrados
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Monumentos del autor encontrados.',
-                'data' => $monuments,
-            ], 200);
-        } catch (\Exception $e) {
-            // Si ocurre algún error al buscar al autor, se retorna una respuesta de error
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error al buscar los monumentos del autor.',
-                'error' => $e->getMessage(),
-            ], 404);
-        }
+        $monuments = DB::table('author_monument')
+            ->join('authors', 'author_monument.author_id', '=', 'authors.id')
+            ->join('monuments', 'author_monument.monument_id', '=', 'monuments.id')
+            ->where('authors.id', $authorId)
+            ->select('monuments.*')
+            ->get();
+
+        return response()->json($monuments);
     }
-    
 
+    public function getTopRatedAuthors()
+    {
+        $topAuthors = DB::table('authors')
+            ->select(
+                'authors.*',
+                DB::raw('COUNT(author_monument.monument_id) AS monument_count'),
+                DB::raw('ROUND(COALESCE(AVG(ratings.rating), 0), 2) AS avg_rating')
+            )
+            ->leftJoin('author_monument', 'authors.id', '=', 'author_monument.author_id')
+            ->leftJoin('monuments', 'author_monument.monument_id', '=', 'monuments.id')
+            ->leftJoin('ratings', function ($join) {
+                $join->on('monuments.id', '=', 'ratings.rateable_id')
+                    ->where('ratings.rateable_type', '=', 'App\Models\Monument');
+            })
+            ->groupBy('authors.id')
+            ->orderBy('avg_rating', 'DESC')
+            ->limit(4)
+            ->get();
 
+        return $topAuthors;
+    }
 
     public function index()
     {
