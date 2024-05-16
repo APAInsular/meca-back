@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Monument;
+use App\Models\MonumentUser;
+use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -176,7 +178,7 @@ class MonumentController extends Controller
     public function checkQrAndUpdatePoints(Request $request, $userId, $monumentId)
     {
         // Buscar la última entrada en la tabla user_monument para este usuario y monumento
-        $lastEntry = UserMonument::where('user_id', $userId)
+        $lastEntry = MonumentUser::where('user_id', $userId)
             ->where('monument_id', $monumentId)
             ->orderBy('created_at', 'desc')
             ->first();
@@ -196,7 +198,7 @@ class MonumentController extends Controller
         }
 
         // Si no hay entradas anteriores o han pasado más de 24 horas, crear una nueva entrada
-        UserMonument::create([
+        MonumentUser::create([
             'user_id' => $userId,
             'monument_id' => $monumentId,
         ]);
