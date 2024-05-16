@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SexRequest;
+use App\Http\Requests\Api\SexRequest;
 use App\Models\Sex;
 
 class SexController extends Controller

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BodyRequest;
-use Illuminate\Http\Request;
+use Illuminate\Http\Api\Request;
 use App\Models\Body;
 
 class BodyController extends Controller
