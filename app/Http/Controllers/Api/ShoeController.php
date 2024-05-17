@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ShoeRequest;
+use App\Http\Requests\Api\ShoeRequest;
 use App\Models\Shoe;
 
 class ShoeController extends Controller

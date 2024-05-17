@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\RouteUserRequest;
+use App\Http\Requests\Api\RouteUserRequest;
 use App\Models\RouteUser;
 
-class RouteUserAccessoryController extends Controller
+class RouteUserController extends Controller
 {
     public function index()
     {

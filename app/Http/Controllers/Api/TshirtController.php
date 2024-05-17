@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\TshirtRequest;
+use App\Http\Requests\Api\TshirtRequest;
 use Illuminate\Http\Request;
 use App\Models\Tshirt;
 
