@@ -17,6 +17,7 @@ class Rating extends Model
      * @var array
      */
     protected $fillable = [
+        'user_id',
         'rating',
         'rateable_type',
         'rateable_id',

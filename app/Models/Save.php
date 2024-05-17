@@ -15,7 +15,11 @@ class Save extends Model
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'user_id',
+        'savable_id',
+        'savable_type',
+    ];
 
     /**
      * The attributes that should be cast to native types.
@@ -24,6 +28,10 @@ class Save extends Model
      */
     protected $casts = [
         'id' => 'integer',
+    ];
+
+    protected $unique = [
+        ['save', 'savable_type', 'savable_id'],
     ];
 
     public function savable(): MorphTo

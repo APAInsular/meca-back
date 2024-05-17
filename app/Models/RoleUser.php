@@ -3,15 +3,16 @@
 // app/Models/RolUser.php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class RolUser extends Model
+class RoleUser extends Pivot
 {
-    protected $table = 'rol_user';
+    protected $table = 'role_user';
     public $timestamps = false;
 
     protected $fillable = [
         'rol_id',
         'user_id',
     ];
+
 }
