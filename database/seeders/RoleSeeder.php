@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Rol;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
 
 class RolSeeder extends Seeder
@@ -12,6 +12,6 @@ class RolSeeder extends Seeder
      */
     public function run(): void
     {
-        Rol::factory()->count(5)->create();
+        Role::factory()->count(5)->create();
     }
 }
