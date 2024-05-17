@@ -12,34 +12,37 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        //RolePermissions
+        //$this->call(RolePermissionSeeder::class);
+
 
         // User
-        // \App\Models\User::factory(10)->create();
+        \App\Models\User::factory(10)->create();
 
         // Monuments
-        // \App\Models\Monument::factory(10)->create();
+        //\App\Models\Monument::factory(10)->create();
 
         // // Monument User
-        // \App\Models\MonumentUser::factory(10)->create();
+        //\App\Models\MonumentUser::factory(10)->create();
 
 
         //Addresses
-        \App\Models\Address::factory(10)->create();
+        //\App\Models\Address::factory(10)->create();
 
         // Address User
         // \App\Models\AddressUser::factory(10)->create();
 
         //Styles
-        \App\Models\Style::factory(10)->create();
+        //\App\Models\Style::factory(10)->create();
 
         //Images
-        \App\Models\Image::factory(10)->create();
+        //\App\Models\Image::factory(10)->create();
 
         //QR codes
-        \App\Models\QR::factory(10)->create();
+        //\App\Models\QR::factory(10)->create();
 
         //Authors
-        \App\Models\Author::factory(10)->create();
+        //\App\Models\Author::factory(10)->create();
 
         // // Author Monument
         // \App\Models\AuthorMonument::factory(10)->create();

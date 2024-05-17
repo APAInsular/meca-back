@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rol_user', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('rol_id');
             $table->foreignId('user_id');
         });

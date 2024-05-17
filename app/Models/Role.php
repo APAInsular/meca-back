@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Permission\Models\Role as SpatieRole;
+use Spatie\Permission\Contracts\Role as RoleContract;
 
-class Role extends Model
+class Role extends SpatieRole implements RoleContract
 {
     use HasFactory;
 
@@ -35,6 +36,6 @@ class Role extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'rol_user', 'rol_id', 'user_id');
     }
 }

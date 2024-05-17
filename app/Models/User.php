@@ -5,17 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Spatie\Permission\Contracts\Role as RoleContract;
+
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -108,7 +109,7 @@ class User extends Authenticatable
     // Relación: Usuario tiene un rol
     public function roles(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsToMany(Role::class, 'rol_user', 'user_id', 'rol_id');
     }
 
     // Relación: Usuario participa en un evento
@@ -151,6 +152,19 @@ class User extends Authenticatable
     public function favoriteable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function getStoredRole(): RoleContract
+    {
+        // Obtén el primer rol asociado al usuario
+        $role = $this->roles()->first();
+
+        // Verifica que el rol implementa la interfaz correcta
+        if (!$role instanceof RoleContract) {
+            throw new \UnexpectedValueException('Role must implement Spatie\Permission\Contracts\Role');
+        }
+
+        return $role;
     }
 
 }
