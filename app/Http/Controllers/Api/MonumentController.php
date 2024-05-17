@@ -203,6 +203,13 @@ class MonumentController extends Controller
             'monument_id' => $monumentId,
         ]);
 
+        // Actualizar los puntos del usuario
+        $user = User::find($userId);
+        if ($user) {
+            $user->points += 50; // Aumentar los puntos en 50
+            $user->save();
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Puntos añadidos al usuario.'
