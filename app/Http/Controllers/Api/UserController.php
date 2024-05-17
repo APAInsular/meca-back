@@ -26,6 +26,24 @@ class UserController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
 
+    public function getUserPoints($userId)
+    {
+        try {
+            $user = User::findOrFail($userId);
+            $points = $user->points;
+            return response()->json([
+                'success' => true,
+                'userId' => $userId,
+                'points' => $points,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se pudo encontrar al usuario.',
+            ], 404);
+        }
+    }
+
     public function getUsersByPointsCategory()
     {
         $users = User::select('id', 'name', 'first_surname', 'second_surname', 'profile_picture', 'points')

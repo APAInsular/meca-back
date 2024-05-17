@@ -31,6 +31,8 @@ Route::get('top-rated-authors', [AuthorController::class, 'getTopRatedAuthors'])
 
 Route::get('users/points-category', [UserController::class, 'getUsersByPointsCategory']);
 
+Route::get('/user/{userId}/points', [UserController::class, 'getUserPoints']);
+
 Route::get('/comments/{commentId}/likes', [LikeController::class, 'likesByComment']);
 
 Route::get('/comments/{commentId}/user-like/{userId}', [LikeController::class, 'getUserLikeForComment']);
@@ -126,3 +128,5 @@ Route::get('/routes/highlighted', [RouteController::class, 'highlightedRoutes'])
 
 // Ruta para filtrar rutas por localidad, obra, estilo de obra, autor/res de la obra y calificación de la ruta con paginación
 Route::post('/routes/filter', [RouteController::class, 'filterRoutes']);
+
+Route::get('/monuments/filter/{page?}', [MonumentController::class, 'filterMonuments']);

@@ -143,7 +143,7 @@ class RouteController extends Controller
     // public function routeRatings($routeId)
     // {
     //     $ratings = DB::table('Routes')
-    //         ->FROM routes
+    //         FROM routes
     //         ->select(DB::raw('COUNT(*) as total_ratings'), DB::raw('AVG(rating) as average_rating'))
     //         ->where('rateable_type', 'Route')
     //         ->where('rateable_id', $routeId)
