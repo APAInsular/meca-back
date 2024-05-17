@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
 
-            $table->unique(['save', 'savable_type', 'savable_id']);
+            $table->unique(['savable_type', 'savable_id']);
         });
         
     }

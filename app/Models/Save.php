@@ -31,7 +31,7 @@ class Save extends Model
     ];
 
     protected $unique = [
-        ['save', 'savable_type', 'savable_id'],
+        ['savable_type', 'savable_id'],
     ];
 
     public function savable(): MorphTo
