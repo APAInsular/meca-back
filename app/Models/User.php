@@ -105,12 +105,6 @@ class User extends Authenticatable
         return $this->belongsToMany(Achievement::class);
     }
 
-    // Relación: Usuario tiene un rol
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class);
-    }
-
     // Relación: Usuario participa en un evento
     public function events(): BelongsToMany
     {

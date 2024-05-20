@@ -85,8 +85,10 @@ Route::get('/avatar/{id}/details', [AvatarController::class, 'getAvatarWithRelat
 //Monumentos filtrados por la localidad
 Route::get('/monuments/filter-by-locality', [MonumentController::class, 'filterByLocality']);
 
-// Definir la ruta para obtener toda la información de una ruta por ID
-Route::get('/routes/{id}/info', [RouteController::class, 'allInfoRoute']);
+Route::group(['middleware' => ['role:admin']], function () {
+    // Definir la ruta para obtener toda la información de una ruta por ID
+    Route::get('/routes/{id}/info', [RouteController::class, 'allInfoRoute']);
+});
 
 // Ruta para obtener todas las paradas de una misma ruta con paginación
 Route::get('/routes/{routeId}/stops', [RouteController::class, 'stopsByRoute']);
