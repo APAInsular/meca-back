@@ -16,7 +16,7 @@ use Spatie\Permission\Contracts\Role as RoleContract;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -154,17 +154,16 @@ class User extends Authenticatable
         return $this->morphTo();
     }
 
-    public function getStoredRole(): RoleContract
-    {
-        // Obtén el primer rol asociado al usuario
-        $role = $this->roles()->first();
+    // public function getStoredRole(): RoleContract
+    // {
+    //     // Obtén el primer rol asociado al usuario
+    //     $role = $this->roles()->first();
 
-        // Verifica que el rol implementa la interfaz correcta
-        if (!$role instanceof RoleContract) {
-            throw new \UnexpectedValueException('Role must implement Spatie\Permission\Contracts\Role');
-        }
+    //     // Verifica que el rol implementa la interfaz correcta
+    //     if (!$role instanceof RoleContract) {
+    //         throw new \UnexpectedValueException('Role must implement Spatie\Permission\Contracts\Role');
+    //     }
 
-        return $role;
-    }
-
+    //     return $role;
+    // }
 }

@@ -26,6 +26,17 @@ class UserController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
 
+    public function getUserProfile($userId)
+    {
+        // Obtener el usuario con todas las relaciones necesarias
+        $user = User::with(['favoriteable'])->findOrFail($userId);
+
+        // Excluir información sensible
+        $user->makeHidden(['password', 'confirm_password']);
+
+        return response()->json($user);
+    }
+
     public function getUserPoints($userId)
     {
         try {

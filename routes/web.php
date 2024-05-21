@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RolUserController;
+// use App\Http\Controllers\RolUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,5 +21,5 @@ Route::get('/', function () {
 
 
 
-Route::post('/assign-role', [RolUserController::class, 'assignRole']);
-Route::post('/remove-role', [RolUserController::class, 'removeRole']);
+// Route::post('/assign-role', [RolUserController::class, 'assignRole']);
+// Route::post('/remove-role', [RolUserController::class, 'removeRole']);
