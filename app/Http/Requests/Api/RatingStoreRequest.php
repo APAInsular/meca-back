@@ -20,6 +20,7 @@ class RatingStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'user_id' => ['required', 'numeric'],
             'rating' => ['required', 'numeric', 'between:1,5'],
             'rateable_type' => ['required', 'string'],
             'rateable_id' => ['required', 'integer'],
