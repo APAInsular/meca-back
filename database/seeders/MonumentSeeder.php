@@ -12,6 +12,6 @@ class MonumentSeeder extends Seeder
      */
     public function run(): void
     {
-        Monument::factory()->count(5)->create();
+        Monument::factory()->count(3)->create();
     }
 }

@@ -36,7 +36,7 @@ class UserFactory extends Factory
             'date_of_birth' => $this->faker->date('Y-m-d', '2003-01-01'),
             'location' => $this->faker->city,
             'postal_code' => $this->faker->postcode,
-            'points' => $this->faker->numberBetween(0, 1000),
+            'points' => $this->faker->numberBetween(0, 150000),
         ];
     }
 

@@ -1,6 +1,5 @@
 <?php
 
-// app/Http/Controllers/RolUserController.php
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AssignRoleRequest;

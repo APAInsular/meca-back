@@ -39,6 +39,8 @@ Route::get('/comments/{commentId}/user-like/{userId}', [LikeController::class, '
 
 Route::get('/check-qr/{userId}/{monumentId}', [MonumentController::class, 'checkQrAndUpdatePoints']);
 
+Route::get('/user/{userId}/profile', [UserController::class, 'getUserProfile']);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Route::get('q-rs/error', [App\Http\Controllers\Api\QRController::class, 'error']);

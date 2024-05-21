@@ -15,43 +15,43 @@ class MonumentController extends Controller
 {
 
     public function filterMonuments(Request $request, $page = 1)
-{
-    $query = DB::table('monuments')
-        ->leftJoin('ratings', function ($join) {
-            $join->on('monuments.id', '=', 'ratings.rateable_id')
-                 ->where('ratings.rateable_type', 'Monument');
-        })
-        ->leftJoin('author_monument', 'monuments.id', '=', 'author_monument.monument_id')
-        ->leftJoin('authors', 'authors.id', '=', 'author_monument.author_id')
-        ->leftJoin('styles', 'monuments.style_id', '=', 'styles.id')
-        ->leftJoin('addresses', 'monuments.address_id', '=', 'addresses.id')
-        ->select('monuments.*', 'styles.name as style_name', 'addresses.location', 'authors.name as author_name', DB::raw('AVG(ratings.rating) as average_rating'))
-        ->groupBy('monuments.id', 'styles.name', 'addresses.location', 'authors.name');
+    {
+        $query = DB::table('monuments')
+            ->leftJoin('ratings', function ($join) {
+                $join->on('monuments.id', '=', 'ratings.rateable_id')
+                    ->where('ratings.rateable_type', 'Monument');
+            })
+            ->leftJoin('author_monument', 'monuments.id', '=', 'author_monument.monument_id')
+            ->leftJoin('authors', 'authors.id', '=', 'author_monument.author_id')
+            ->leftJoin('styles', 'monuments.style_id', '=', 'styles.id')
+            ->leftJoin('addresses', 'monuments.address_id', '=', 'addresses.id')
+            ->select('monuments.*', 'styles.name as style_name', 'addresses.location', 'authors.name as author_name', DB::raw('AVG(ratings.rating) as average_rating'))
+            ->groupBy('monuments.id', 'styles.name', 'addresses.location', 'authors.name');
 
-    if ($request->has('location')) {
-        $query->where('addresses.location', 'like', '%' . $request->location . '%');
-    }
-    if ($request->has('style_id')) {
-        $query->where('monuments.style_id', $request->style_id);
-    }
-    if ($request->has('author_id')) {
-        $query->where('authors.id', $request->author_id);
-    }
-    if ($request->has('creation_year')) {
-        $query->whereYear('monuments.creation_date', $request->creation_year);
-    }
-    if ($request->has('rating')) {
-        $query->having('average_rating', '>=', $request->rating);
-    }
+        if ($request->has('location')) {
+            $query->where('addresses.location', 'like', '%' . $request->location . '%');
+        }
+        if ($request->has('style_id')) {
+            $query->where('monuments.style_id', $request->style_id);
+        }
+        if ($request->has('author_id')) {
+            $query->where('authors.id', $request->author_id);
+        }
+        if ($request->has('creation_year')) {
+            $query->whereYear('monuments.creation_date', $request->creation_year);
+        }
+        if ($request->has('rating')) {
+            $query->having('average_rating', '>=', $request->rating);
+        }
 
-    $monuments = $query->paginate(20, ['*'], 'page', $page);
+        $monuments = $query->paginate(20, ['*'], 'page', $page);
 
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Filtered monuments retrieved successfully',
-        'data' => $monuments,
-    ], 200);
-}
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Filtered monuments retrieved successfully',
+            'data' => $monuments,
+        ], 200);
+    }
 
     public function allMonumentInfo()
     {
@@ -125,14 +125,46 @@ class MonumentController extends Controller
     {
         $userId = $request->userId;
 
-        // Obtener la información básica del monumento
-        $monument = DB::table('Monuments')->where('id', $monumentId)->first();
+        // Obtener la información básica del monumento junto con los ratings usando Eloquent
+        $monument = DB::table('Monuments as m')
+            ->where('m.id', $monumentId)
+            ->select(
+                'm.id',
+                'm.title',
+                'm.type',
+                'm.creation_date',
+                'm.main_image',
+                'm.latitude',
+                'm.longitude',
+                'm.meaning',
+                DB::raw('(
+                SELECT COUNT(rating)
+                FROM ratings r
+                WHERE r.rateable_id = m.id
+                AND r.rateable_type = "App/Models/Monument"
+            ) AS total_ratings'),
+                DB::raw('(
+                SELECT ROUND(COALESCE(AVG(rating), 0), 2)
+                FROM ratings r
+                WHERE r.rateable_id = m.id
+                AND r.rateable_type = "App/Models/Monument"
+            ) AS average_rating')
+            )
+            ->first();
 
         // Obtener los autores asociados al monumento
         $authors = DB::table('Authors')
             ->join('author_monument', 'Authors.id', '=', 'author_monument.author_id')
             ->where('author_monument.monument_id', $monumentId)
-            ->select('Authors.id', 'Authors.name')
+            ->select(
+                'Authors.id',
+                'Authors.name',
+                'Authors.first_surname',
+                'Authors.second_surname',
+                'Authors.date_of_birth',
+                'Authors.date_of_death',
+                'Authors.description'
+            )
             ->get();
 
         // Obtener los estilos asociados al monumento
@@ -147,10 +179,10 @@ class MonumentController extends Controller
             ->join('Users', 'Comments.user_id', '=', 'Users.id')
             ->leftJoin('likes', function ($join) {
                 $join->on('Comments.id', '=', 'likes.likable_id')
-                    ->where('likes.likable_type', '=', 'Comment');
+                    ->where('likes.likable_type', '=', 'App/Models/Comment');
             })
             ->where('Comments.commentable_id', $monumentId)
-            ->where('Comments.commentable_type', 'Monument')
+            ->where('Comments.commentable_type', 'App/Models/Monument')
             ->select(
                 'Comments.id',
                 'Comments.content',
@@ -162,39 +194,33 @@ class MonumentController extends Controller
             ->groupBy('Comments.id')
             ->get();
 
-        // Obtener la información de los likes de cada comentario
+        // Obtener la información de los likes de cada comentario y si el usuario ha dado "me gusta"
         foreach ($comments as $comment) {
-            // Verificar si el usuario ha dado "me gusta" al comentario actual
             $userLike = DB::table('likes')
                 ->where('likable_id', $comment->id)
-                ->where('likable_type', 'Comment')
+                ->where('likable_type', 'App/Models/Comment')
                 ->where('user_id', $userId)
-                ->first(); // Obtener la primera coincidencia si existe
+                ->first();
 
-            // Estructurar los likes como objetos de usuario
             $comment->likes = DB::table('likes')
                 ->where('likable_id', $comment->id)
-                ->where('likable_type', 'Comment')
+                ->where('likable_type', 'App/Models/Comment')
                 ->join('Users', 'likes.user_id', '=', 'Users.id')
                 ->select('likes.id', 'Users.id as user_id', 'Users.nickname', 'Users.profile_picture')
                 ->get();
 
-            // Estructurar el usuario del comentario como un objeto de usuario
             $comment->user = [
                 'id' => $comment->id,
                 'nickname' => $comment->nickname,
                 'profile_picture' => $comment->profile_picture
-                // Agrega aquí cualquier otro campo de usuario que desees incluir
             ];
 
-            // Agregar la propiedad user_like al comentario con el ID del like y del usuario
             $comment->user_like = $userLike ? (object)[
                 'value' => true,
                 'like_id' => $userLike->id,
                 'user_id' => $userLike->user_id
             ] : (object)['value' => false];
         }
-
 
         // Construir el arreglo final con el formato requerido
         $response = [
@@ -206,10 +232,11 @@ class MonumentController extends Controller
             'latitude' => $monument->latitude,
             'longitude' => $monument->longitude,
             'meaning' => $monument->meaning,
+            'total_ratings' => $monument->total_ratings,
+            'average_rating' => $monument->average_rating,
             'authors' => $authors,
             'styles' => $styles,
             'comments' => $comments,
-            // Aquí puedes agregar cualquier otra información que necesites del monumento
         ];
 
         return response()->json($response);
