@@ -23,3 +23,4 @@ Route::get('/', function () {
 
 Route::post('/assign-role', [RolUserController::class, 'assignRole']);
 Route::post('/remove-role', [RolUserController::class, 'removeRole']);
+
