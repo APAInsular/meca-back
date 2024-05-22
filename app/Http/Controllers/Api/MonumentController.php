@@ -138,19 +138,25 @@ class MonumentController extends Controller
                 'm.longitude',
                 'm.meaning',
                 DB::raw('(
-                SELECT COUNT(rating)
-                FROM ratings r
-                WHERE r.rateable_id = m.id
-                AND r.rateable_type = "App\\Models\\Monument"
-            ) AS total_ratings'),
+                    SELECT COUNT(rating)
+                    FROM ratings r
+                    WHERE r.rateable_id = m.id
+                    AND r.rateable_type = "App\\Models\\Monument"
+                ) AS total_ratings'),
                 DB::raw('(
-                SELECT ROUND(COALESCE(AVG(rating), 0), 2)
-                FROM ratings r
-                WHERE r.rateable_id = m.id
-                AND r.rateable_type = "App\\Models\\Monument"
-            ) AS average_rating')
+                    SELECT ROUND(COALESCE(AVG(rating), 0), 2)
+                    FROM ratings r
+                    WHERE r.rateable_id = m.id
+                    AND r.rateable_type = "App\\Models\\Monument"
+                ) AS average_rating')
             )
-            ->first();
+            ->get();
+
+        if ($monument->isEmpty()) {
+            return response()->json(['message' => 'Monument not found'], 404);
+        }
+
+        $monument = $monument->first();
 
         // Obtener los autores asociados al monumento
         $authors = DB::table('authors')
