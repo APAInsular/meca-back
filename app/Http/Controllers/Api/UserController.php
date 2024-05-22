@@ -87,6 +87,17 @@ class UserController extends Controller
 
     public function getUsersByPointsCategory()
     {
+        // Inicializamos las categorías con arrays vacíos
+        $categories = [
+            'top' => [],
+            'platino' => [],
+            'oro' => [],
+            'plata' => [],
+            'bronce' => [],
+            'otros' => []
+        ];
+
+        // Obtenemos y agrupamos a los usuarios
         $users = User::select('id', 'name', 'first_surname', 'second_surname', 'profile_picture', 'points')
             ->get()
             ->groupBy(function ($user) {
@@ -106,7 +117,7 @@ class UserController extends Controller
                 }
             })
             ->map(function ($group) {
-                // Format the user data for each group
+                // Formateamos los datos de cada usuario en el grupo
                 return $group->map(function ($user) {
                     return [
                         'id' => $user->id,
@@ -119,9 +130,11 @@ class UserController extends Controller
                 })->toArray();
             });
 
-        return $users;
-    }
+        // Combinamos las categorías iniciales con los usuarios agrupados
+        $result = array_merge($categories, $users->toArray());
 
+        return $result;
+    }
 
     public function index()
     {
