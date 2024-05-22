@@ -55,30 +55,66 @@ class MonumentController extends Controller
 
     public function allMonumentInfo()
     {
-        $monuments = Monument::with(['authors', 'styles'])
-            ->withCount('ratings')
-            ->withAvg('ratings', 'rating')
-            ->get();
+        $query = "
+            SELECT 
+                m.id AS monument_id,
+                m.title AS monument_title,
+                m.type AS monument_type,
+                m.creation_date AS monument_creation_date,
+                m.main_image AS monument_main_image,
+                m.latitude AS monument_latitude,
+                m.longitude AS monument_longitude,
+                m.meaning AS monument_meaning,
+                JSON_ARRAYAGG(JSON_OBJECT('id', a.id, 'name', a.name)) AS authors,
+                GROUP_CONCAT(s.name) AS styles,
+                (
+                    SELECT COUNT(rating)
+                    FROM ratings r
+                    WHERE r.rateable_id = m.id
+                ) AS total_ratings,
+                (
+                    SELECT ROUND(COALESCE(AVG(rating), 0), 2)
+                    FROM ratings r
+                    WHERE r.rateable_id = m.id
+                ) AS average_rating
+            FROM 
+                monuments m
+            LEFT JOIN 
+                author_monument am ON m.id = am.monument_id
+            LEFT JOIN 
+                authors a ON am.author_id = a.id
+            LEFT JOIN 
+                monument_style ms ON m.id = ms.monument_id
+            LEFT JOIN 
+                styles s ON ms.style_id = s.id
+            GROUP BY 
+                m.id
+        ";
 
-        $result = $monuments->map(function ($monument) {
+        $monuments = DB::select($query);
+
+        $result = collect($monuments)->map(function ($monument) {
+            $authors = json_decode($monument->authors, true);
+            $authors = array_map(function ($author) {
+                return [
+                    'id' => $author['id'],
+                    'name' => $author['name']
+                ];
+            }, $authors);
+
             return [
-                'id' => $monument->id,
-                'title' => $monument->title,
-                'type' => $monument->type,
-                'creation_date' => $monument->creation_date,
-                'main_image' => $monument->main_image,
-                'latitude' => $monument->latitude,
-                'longitude' => $monument->longitude,
-                'meaning' => $monument->meaning,
-                'authors' => $monument->authors->map(function ($author) {
-                    return [
-                        'id' => $author->id,
-                        'name' => $author->name
-                    ];
-                }),
-                'styles' => $monument->styles->pluck('name')->toArray(),
-                'total_ratings' => $monument->ratings_count,
-                'average_rating' => round($monument->ratings_avg, 2),
+                'id' => $monument->monument_id,
+                'title' => $monument->monument_title,
+                'type' => $monument->monument_type,
+                'creation_date' => $monument->monument_creation_date,
+                'main_image' => $monument->monument_main_image,
+                'latitude' => $monument->monument_latitude,
+                'longitude' => $monument->monument_longitude,
+                'meaning' => $monument->monument_meaning,
+                'authors' => $authors,
+                'styles' => $monument->styles ? explode(',', $monument->styles) : [],
+                'total_ratings' => $monument->total_ratings,
+                'average_rating' => $monument->average_rating,
             ];
         });
 
@@ -90,65 +126,107 @@ class MonumentController extends Controller
         $userId = $request->userId;
 
         // Obtener la información básica del monumento junto con los ratings usando Eloquent
-        $monument = Monument::withCount(['ratings as total_ratings'])
-            ->withAvg('ratings as average_rating', 'rating')
-            ->where('id', $monumentId)
-            ->first();
+        $monument = DB::table('monuments as m')
+            ->where('m.id', $monumentId)
+            ->select(
+                'm.id',
+                'm.title',
+                'm.type',
+                'm.creation_date',
+                'm.main_image',
+                'm.latitude',
+                'm.longitude',
+                'm.meaning',
+                DB::raw('(
+                    SELECT COUNT(rating)
+                    FROM ratings r
+                    WHERE r.rateable_id = m.id
+                    AND r.rateable_type = "App\\Models\\Monument"
+                ) AS total_ratings'),
+                DB::raw('(
+                    SELECT ROUND(COALESCE(AVG(rating), 0), 2)
+                    FROM ratings r
+                    WHERE r.rateable_id = m.id
+                    AND r.rateable_type = "App\\Models\\Monument"
+                ) AS average_rating')
+            )
+            ->get();
 
-        if (!$monument) {
+        if ($monument->isEmpty()) {
             return response()->json(['message' => 'Monument not found'], 404);
         }
 
+        $monument = $monument->first();
+
         // Obtener los autores asociados al monumento
-        $authors = $monument->authors()->select(
-            'authors.id',
-            'authors.name',
-            'authors.first_surname',
-            'authors.second_surname',
-            'authors.date_of_birth',
-            'authors.date_of_death',
-            'authors.description'
-        )->get();
+        $authors = DB::table('authors')
+            ->join('author_monument', 'authors.id', '=', 'author_monument.author_id')
+            ->where('author_monument.monument_id', $monumentId)
+            ->select(
+                'authors.id',
+                'authors.name',
+                'authors.first_surname',
+                'authors.second_surname',
+                'authors.date_of_birth',
+                'authors.date_of_death',
+                'authors.description'
+            )
+            ->get();
 
         // Obtener los estilos asociados al monumento
-        $styles = $monument->styles()->select('styles.id', 'styles.name')->get();
+        $styles = DB::table('styles')
+            ->join('monument_style', 'styles.id', '=', 'monument_style.style_id')
+            ->where('monument_style.monument_id', $monumentId)
+            ->select('styles.id', 'styles.name')
+            ->get();
 
         // Obtener los comentarios asociados al monumento, incluyendo información completa de los usuarios y likes
-        $comments = $monument->comments()
-            ->with(['user:id,nickname,profile_picture', 'likes' => function ($query) use ($userId) {
-                $query->where('user_id', $userId);
-            }])
-            ->withCount('likes')
-            ->get()
-            ->map(function ($comment) use ($userId) {
-                $userLike = $comment->likes->firstWhere('user_id', $userId);
-                return [
-                    'id' => $comment->id,
-                    'content' => $comment->content,
-                    'created_at' => $comment->created_at,
-                    'nickname' => $comment->user->nickname,
-                    'profile_picture' => $comment->user->profile_picture,
-                    'total_likes' => $comment->likes_count,
-                    'likes' => $comment->likes->map(function ($like) {
-                        return [
-                            'id' => $like->id,
-                            'user_id' => $like->user_id,
-                            'nickname' => $like->user->nickname,
-                            'profile_picture' => $like->user->profile_picture,
-                        ];
-                    }),
-                    'user' => [
-                        'id' => $comment->user->id,
-                        'nickname' => $comment->user->nickname,
-                        'profile_picture' => $comment->user->profile_picture
-                    ],
-                    'user_like' => $userLike ? (object)[
-                        'value' => true,
-                        'like_id' => $userLike->id,
-                        'user_id' => $userLike->user_id
-                    ] : (object)['value' => false]
-                ];
-            });
+        $comments = DB::table('comments')
+            ->join('users', 'comments.user_id', '=', 'users.id')
+            ->leftJoin('likes', function ($join) {
+                $join->on('comments.id', '=', 'likes.likable_id')
+                    ->where('likes.likable_type', '=', 'App\\Models\\Comment');
+            })
+            ->where('comments.commentable_id', $monumentId)
+            ->where('comments.commentable_type', 'App\\Models\\Monument')
+            ->select(
+                'comments.id',
+                'comments.content',
+                'comments.created_at',
+                'users.nickname',
+                'users.profile_picture',
+                DB::raw('COUNT(likes.id) as total_likes')
+            )
+            ->groupBy('comments.id')
+            ->get();
+
+        // Obtener la información de los likes de cada comentario y si el usuario ha dado "me gusta"
+        foreach ($comments as $comment) {
+            $userLike = DB::table('likes')
+                ->where('likable_id', $comment->id)
+                ->where('likable_type', 'App\\Models\\Comment')
+                ->where('user_id', $userId)
+                ->first();
+
+            $comment->likes = DB::table('likes')
+                ->where('likable_id', $comment->id)
+                ->where('likable_type', 'App\\Models\\Comment')
+                ->join('users', 'likes.user_id', '=', 'users.id')
+                ->select('likes.id', 'users.id as user_id', 'users.nickname', 'users.profile_picture')
+                ->get();
+
+            $comment->user = [
+                'id' => $comment->id,
+                'nickname' => $comment->nickname,
+                'profile_picture' => $comment->profile_picture
+            ];
+
+            $comment->user_like = $userLike ? (object)[
+                'value' => true,
+                'like_id' => $userLike->id,
+                'user_id' => $userLike->user_id
+            ] : (object)['value' => false];
+        }
 
         // Construir el arreglo final con el formato requerido
         $response = [
@@ -161,7 +239,7 @@ class MonumentController extends Controller
             'longitude' => $monument->longitude,
             'meaning' => $monument->meaning,
             'total_ratings' => $monument->total_ratings,
-            'average_rating' => round($monument->average_rating, 2),
+            'average_rating' => $monument->average_rating,
             'authors' => $authors,
             'styles' => $styles,
             'comments' => $comments,
