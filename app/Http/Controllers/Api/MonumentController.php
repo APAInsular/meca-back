@@ -141,37 +141,37 @@ class MonumentController extends Controller
                 SELECT COUNT(rating)
                 FROM ratings r
                 WHERE r.rateable_id = m.id
-                AND r.rateable_type = "App/Models/Monument"
+                AND r.rateable_type = "App\\Models\\Monument"
             ) AS total_ratings'),
                 DB::raw('(
                 SELECT ROUND(COALESCE(AVG(rating), 0), 2)
                 FROM ratings r
                 WHERE r.rateable_id = m.id
-                AND r.rateable_type = "App/Models/Monument"
+                AND r.rateable_type = "App\\Models\\Monument"
             ) AS average_rating')
             )
             ->first();
 
         // Obtener los autores asociados al monumento
         $authors = DB::table('authors')
-            ->join('author_monument', 'Authors.id', '=', 'author_monument.author_id')
+            ->join('author_monument', 'authors.id', '=', 'author_monument.author_id')
             ->where('author_monument.monument_id', $monumentId)
             ->select(
-                'Authors.id',
-                'Authors.name',
-                'Authors.first_surname',
-                'Authors.second_surname',
-                'Authors.date_of_birth',
-                'Authors.date_of_death',
-                'Authors.description'
+                'authors.id',
+                'authors.name',
+                'authors.first_surname',
+                'authors.second_surname',
+                'authors.date_of_birth',
+                'authors.date_of_death',
+                'authors.description'
             )
             ->get();
 
         // Obtener los estilos asociados al monumento
         $styles = DB::table('styles')
-            ->join('monument_style', 'Styles.id', '=', 'monument_style.style_id')
+            ->join('monument_style', 'styles.id', '=', 'monument_style.style_id')
             ->where('monument_style.monument_id', $monumentId)
-            ->select('Styles.id', 'Styles.name')
+            ->select('styles.id', 'styles.name')
             ->get();
 
         // Obtener los comentarios asociados al monumento, incluyendo información completa de los usuarios y likes
@@ -179,10 +179,10 @@ class MonumentController extends Controller
             ->join('users', 'comments.user_id', '=', 'users.id')
             ->leftJoin('likes', function ($join) {
                 $join->on('comments.id', '=', 'likes.likable_id')
-                    ->where('likes.likable_type', '=', 'App/Models/Comment');
+                    ->where('likes.likable_type', '=', 'App\\Models\\Comment');
             })
             ->where('comments.commentable_id', $monumentId)
-            ->where('comments.commentable_type', 'App/Models/Monument')
+            ->where('comments.commentable_type', 'App\\Models\\Monument')
             ->select(
                 'comments.id',
                 'comments.content',
@@ -198,15 +198,15 @@ class MonumentController extends Controller
         foreach ($comments as $comment) {
             $userLike = DB::table('likes')
                 ->where('likable_id', $comment->id)
-                ->where('likable_type', 'App/Models/Comment')
+                ->where('likable_type', 'App\\Models\\Comment')
                 ->where('user_id', $userId)
                 ->first();
 
             $comment->likes = DB::table('likes')
                 ->where('likable_id', $comment->id)
-                ->where('likable_type', 'App/Models/Comment')
+                ->where('likable_type', 'App\\Models\\Comment')
                 ->join('users', 'likes.user_id', '=', 'users.id')
-                ->select('likes.id', 'Users.id as user_id', 'users.nickname', 'users.profile_picture')
+                ->select('likes.id', 'users.id as user_id', 'users.nickname', 'users.profile_picture')
                 ->get();
 
             $comment->user = [
@@ -241,6 +241,7 @@ class MonumentController extends Controller
 
         return response()->json($response);
     }
+
 
     public function checkQrAndUpdatePoints(Request $request, $userId, $monumentId)
     {
