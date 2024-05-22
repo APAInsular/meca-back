@@ -126,7 +126,7 @@ class MonumentController extends Controller
         $userId = $request->userId;
 
         // Obtener la información básica del monumento junto con los ratings usando Eloquent
-        $monument = DB::table('Monuments as m')
+        $monument = DB::table('monuments as m')
             ->where('m.id', $monumentId)
             ->select(
                 'm.id',
@@ -153,7 +153,7 @@ class MonumentController extends Controller
             ->first();
 
         // Obtener los autores asociados al monumento
-        $authors = DB::table('Authors')
+        $authors = DB::table('authors')
             ->join('author_monument', 'Authors.id', '=', 'author_monument.author_id')
             ->where('author_monument.monument_id', $monumentId)
             ->select(
@@ -168,30 +168,30 @@ class MonumentController extends Controller
             ->get();
 
         // Obtener los estilos asociados al monumento
-        $styles = DB::table('Styles')
+        $styles = DB::table('styles')
             ->join('monument_style', 'Styles.id', '=', 'monument_style.style_id')
             ->where('monument_style.monument_id', $monumentId)
             ->select('Styles.id', 'Styles.name')
             ->get();
 
         // Obtener los comentarios asociados al monumento, incluyendo información completa de los usuarios y likes
-        $comments = DB::table('Comments')
-            ->join('Users', 'Comments.user_id', '=', 'Users.id')
+        $comments = DB::table('comments')
+            ->join('users', 'comments.user_id', '=', 'users.id')
             ->leftJoin('likes', function ($join) {
-                $join->on('Comments.id', '=', 'likes.likable_id')
+                $join->on('comments.id', '=', 'likes.likable_id')
                     ->where('likes.likable_type', '=', 'App/Models/Comment');
             })
-            ->where('Comments.commentable_id', $monumentId)
-            ->where('Comments.commentable_type', 'App/Models/Monument')
+            ->where('comments.commentable_id', $monumentId)
+            ->where('comments.commentable_type', 'App/Models/Monument')
             ->select(
-                'Comments.id',
-                'Comments.content',
-                'Comments.created_at',
-                'Users.nickname',
-                'Users.profile_picture',
+                'comments.id',
+                'comments.content',
+                'comments.created_at',
+                'users.nickname',
+                'users.profile_picture',
                 DB::raw('COUNT(likes.id) as total_likes')
             )
-            ->groupBy('Comments.id')
+            ->groupBy('comments.id')
             ->get();
 
         // Obtener la información de los likes de cada comentario y si el usuario ha dado "me gusta"
@@ -205,8 +205,8 @@ class MonumentController extends Controller
             $comment->likes = DB::table('likes')
                 ->where('likable_id', $comment->id)
                 ->where('likable_type', 'App/Models/Comment')
-                ->join('Users', 'likes.user_id', '=', 'Users.id')
-                ->select('likes.id', 'Users.id as user_id', 'Users.nickname', 'Users.profile_picture')
+                ->join('users', 'likes.user_id', '=', 'users.id')
+                ->select('likes.id', 'Users.id as user_id', 'users.nickname', 'users.profile_picture')
                 ->get();
 
             $comment->user = [
