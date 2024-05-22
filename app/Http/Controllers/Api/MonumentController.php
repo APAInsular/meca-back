@@ -180,53 +180,53 @@ class MonumentController extends Controller
             ->select('styles.id', 'styles.name')
             ->get();
 
-        // Obtener los comentarios asociados al monumento, incluyendo información completa de los usuarios y likes
-        $comments = DB::table('comments')
-            ->join('users', 'comments.user_id', '=', 'users.id')
-            ->leftJoin('likes', function ($join) {
-                $join->on('comments.id', '=', 'likes.likable_id')
-                    ->where('likes.likable_type', '=', 'App\\Models\\Comment');
-            })
-            ->where('comments.commentable_id', $monumentId)
-            ->where('comments.commentable_type', 'App\\Models\\Monument')
-            ->select(
-                'comments.id',
-                'comments.content',
-                'comments.created_at',
-                'users.nickname',
-                'users.profile_picture',
-                DB::raw('COUNT(likes.id) as total_likes')
-            )
-            ->groupBy('comments.id')
-            ->get();
+        // // Obtener los comentarios asociados al monumento, incluyendo información completa de los usuarios y likes
+        // $comments = DB::table('comments')
+        //     ->join('users', 'comments.user_id', '=', 'users.id')
+        //     ->leftJoin('likes', function ($join) {
+        //         $join->on('comments.id', '=', 'likes.likable_id')
+        //             ->where('likes.likable_type', '=', 'App\\Models\\Comment');
+        //     })
+        //     ->where('comments.commentable_id', $monumentId)
+        //     ->where('comments.commentable_type', 'App\\Models\\Monument')
+        //     ->select(
+        //         'comments.id',
+        //         'comments.content',
+        //         'comments.created_at',
+        //         'users.nickname',
+        //         'users.profile_picture',
+        //         DB::raw('COUNT(likes.id) as total_likes')
+        //     )
+        //     ->groupBy('comments.id')
+        //     ->get();
 
-        // Obtener la información de los likes de cada comentario y si el usuario ha dado "me gusta"
-        foreach ($comments as $comment) {
-            $userLike = DB::table('likes')
-                ->where('likable_id', $comment->id)
-                ->where('likable_type', 'App\\Models\\Comment')
-                ->where('user_id', $userId)
-                ->first();
+        // // Obtener la información de los likes de cada comentario y si el usuario ha dado "me gusta"
+        // foreach ($comments as $comment) {
+        //     $userLike = DB::table('likes')
+        //         ->where('likable_id', $comment->id)
+        //         ->where('likable_type', 'App\\Models\\Comment')
+        //         ->where('user_id', $userId)
+        //         ->first();
 
-            $comment->likes = DB::table('likes')
-                ->where('likable_id', $comment->id)
-                ->where('likable_type', 'App\\Models\\Comment')
-                ->join('users', 'likes.user_id', '=', 'users.id')
-                ->select('likes.id', 'users.id as user_id', 'users.nickname', 'users.profile_picture')
-                ->get();
+        //     $comment->likes = DB::table('likes')
+        //         ->where('likable_id', $comment->id)
+        //         ->where('likable_type', 'App\\Models\\Comment')
+        //         ->join('users', 'likes.user_id', '=', 'users.id')
+        //         ->select('likes.id', 'users.id as user_id', 'users.nickname', 'users.profile_picture')
+        //         ->get();
 
-            $comment->user = [
-                'id' => $comment->id,
-                'nickname' => $comment->nickname,
-                'profile_picture' => $comment->profile_picture
-            ];
+        //     $comment->user = [
+        //         'id' => $comment->id,
+        //         'nickname' => $comment->nickname,
+        //         'profile_picture' => $comment->profile_picture
+        //     ];
 
-            $comment->user_like = $userLike ? (object)[
-                'value' => true,
-                'like_id' => $userLike->id,
-                'user_id' => $userLike->user_id
-            ] : (object)['value' => false];
-        }
+        //     $comment->user_like = $userLike ? (object)[
+        //         'value' => true,
+        //         'like_id' => $userLike->id,
+        //         'user_id' => $userLike->user_id
+        //     ] : (object)['value' => false];
+        // }
 
         // Construir el arreglo final con el formato requerido
         $response = [
@@ -242,7 +242,7 @@ class MonumentController extends Controller
             'average_rating' => $monument->average_rating,
             'authors' => $authors,
             'styles' => $styles,
-            'comments' => $comments,
+            // 'comments' => $comments,
         ];
 
         return response()->json($response);
