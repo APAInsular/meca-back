@@ -98,9 +98,6 @@ Route::resource('authors', App\Http\Controllers\Api\AuthorController::class)->ex
 
 // ----------------------------  CUSTOMIZE QUERYS  ----------------------------
 
-Route::get('monuments/all-info', [App\Http\Controllers\Api\MonumentController::class, 'allMonumentInfo']);
-Route::get('monuments/{monumentId}', [MonumentController::class, 'findMonumentById']);
-
 Route::get('authors/mon/{authorId}', [AuthorController::class, 'getMonumentsByAuthor']);
 
 // Ruta para obtener el usuario al que pertenece un avatar

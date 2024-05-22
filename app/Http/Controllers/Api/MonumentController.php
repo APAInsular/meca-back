@@ -55,66 +55,30 @@ class MonumentController extends Controller
 
     public function allMonumentInfo()
     {
-        $query = "
-        SELECT 
-        m.id AS monument_id,
-        m.title AS monument_title,
-        m.type AS monument_type,
-        m.creation_date AS monument_creation_date,
-        m.main_image AS monument_main_image,
-        m.latitude AS monument_latitude,
-        m.longitude AS monument_longitude,
-        m.meaning AS monument_meaning,
-        JSON_ARRAYAGG(JSON_OBJECT('id', a.id, 'name', a.name)) AS authors,
-        GROUP_CONCAT(s.name) AS styles,
-        (
-            SELECT COUNT(rating)
-            FROM ratings r
-            WHERE r.rateable_id = m.id
-        ) AS total_ratings,
-        (
-            SELECT ROUND(COALESCE(AVG(rating), 0), 2)
-            FROM ratings r
-            WHERE r.rateable_id = m.id
-        ) AS average_rating
-    FROM 
-        monuments m
-    LEFT JOIN 
-        author_monument am ON m.id = am.monument_id
-    LEFT JOIN 
-        authors a ON am.author_id = a.id
-    LEFT JOIN 
-        monument_style ms ON m.id = ms.monument_id
-    LEFT JOIN 
-        styles s ON ms.style_id = s.id
-    GROUP BY 
-        m.id, m.title, m.type, m.creation_date, m.main_image, m.latitude, m.longitude, m.meaning    
-        ";
+        $monuments = Monument::with(['authors', 'styles'])
+            ->withCount('ratings')
+            ->withAvg('ratings', 'rating')
+            ->get();
 
-        $monuments = DB::select($query);
-
-        $result = collect($monuments)->map(function ($monument) {
-            $authors = json_decode($monument->authors, true);
-            $authors = array_map(function ($author) {
-                return [
-                    'id' => $author['id'],
-                    'name' => $author['name']
-                ];
-            }, $authors);
-
+        $result = $monuments->map(function ($monument) {
             return [
-                'id' => $monument->monument_id,
-                'title' => $monument->monument_title,
-                'type' => $monument->monument_type,
-                'creation_date' => $monument->monument_creation_date,
-                'main_image' => $monument->monument_main_image,
-                'latitude' => $monument->monument_latitude,
-                'longitude' => $monument->monument_longitude,
-                'meaning' => $monument->monument_meaning,
-                'authors' => $authors,
-                'styles' => $monument->styles ? explode(',', $monument->styles) : [],
-                'total_ratings' => $monument->total_ratings,
-                'average_rating' => $monument->average_rating,
+                'id' => $monument->id,
+                'title' => $monument->title,
+                'type' => $monument->type,
+                'creation_date' => $monument->creation_date,
+                'main_image' => $monument->main_image,
+                'latitude' => $monument->latitude,
+                'longitude' => $monument->longitude,
+                'meaning' => $monument->meaning,
+                'authors' => $monument->authors->map(function ($author) {
+                    return [
+                        'id' => $author->id,
+                        'name' => $author->name
+                    ];
+                }),
+                'styles' => $monument->styles->pluck('name')->toArray(),
+                'total_ratings' => $monument->ratings_count,
+                'average_rating' => round($monument->ratings_avg, 2),
             ];
         });
 
