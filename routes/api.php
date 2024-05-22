@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\LikeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AvatarController;
 use App\Http\Controllers\Api\RouteController;
+use App\Http\Controllers\Api\SubAchievementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,7 @@ Route::get('top-rated-authors', [AuthorController::class, 'getTopRatedAuthors'])
 Route::get('users/points-category', [UserController::class, 'getUsersByPointsCategory']);
 
 Route::get('/user/{userId}/points', [UserController::class, 'getUserPoints']);
+Route::post('/user/{userId}/up-points', [UserController::class, 'updateUserPoints']);
 
 Route::get('/comments/{commentId}/likes', [LikeController::class, 'likesByComment']);
 
@@ -41,6 +43,7 @@ Route::get('/check-qr/{userId}/{monumentId}', [MonumentController::class, 'check
 
 Route::get('/user/{userId}/profile', [UserController::class, 'getUserProfile']);
 
+Route::get('/subachievement/get-all/{userId}', [SubAchievementController::class, 'getSubachievementsByKeywords']);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Route::get('q-rs/error', [App\Http\Controllers\Api\QRController::class, 'error']);

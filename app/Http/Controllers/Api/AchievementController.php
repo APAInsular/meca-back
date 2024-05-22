@@ -9,6 +9,15 @@ use App\Models\Achievement;
 
 class AchievementController extends Controller
 {
+    public function getAchievementUser($userId)
+    {
+        $achievements = Achievement::with(['userAchievements' => function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        }])->get();
+
+        return $achievements;
+    }
+
     public function index()
     {
         $achievements = Achievement::all();

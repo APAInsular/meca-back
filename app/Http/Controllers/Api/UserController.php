@@ -55,6 +55,36 @@ class UserController extends Controller
         }
     }
 
+    public function updateUserPoints(Request $request, $userId)
+    {
+        // Validar que los puntos sean un entero y no nulo
+        $this->validate($request, [
+            'points' => 'required|integer',
+        ]);
+
+        try {
+            // Buscar el usuario por su ID
+            $user = User::findOrFail($userId);
+
+            // Incrementar los puntos del usuario
+            $user->points += $request->input('points');
+
+            // Guardar los cambios en la base de datos
+            $user->save();
+
+            return response()->json([
+                'success' => true,
+                'userId' => $userId,
+                'points' => $user->points,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se pudo actualizar los puntos del usuario.',
+            ], 500);
+        }
+    }
+
     public function getUsersByPointsCategory()
     {
         $users = User::select('id', 'name', 'first_surname', 'second_surname', 'profile_picture', 'points')
