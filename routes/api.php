@@ -22,15 +22,15 @@ use App\Http\Controllers\Api\SubAchievementController;
 
 // ----------------------------  CUSTOMIZE QUERYS  ----------------------------
 
-Route::get('monuments/all-info', [MonumentController::class, 'allMonumentInfo']);
-Route::get('monuments/{id}', [MonumentController::class, 'findMonumentById']);
+Route::get('/monuments/all-info', [MonumentController::class, 'allMonumentInfo']);
+Route::get('/monuments/{id}', [MonumentController::class, 'findMonumentById']);
 
 Route::resource('/user', UserController::class);
 
-Route::get('top-rated-monuments', [MonumentController::class, 'getTopRatedMonuments']);
-Route::get('top-rated-authors', [AuthorController::class, 'getTopRatedAuthors']);
+Route::get('/top-rated-monuments', [MonumentController::class, 'getTopRatedMonuments']);
+Route::get('/top-rated-authors', [AuthorController::class, 'getTopRatedAuthors']);
 
-Route::get('users/points-category', [UserController::class, 'getUsersByPointsCategory']);
+Route::get('/users/points-category', [UserController::class, 'getUsersByPointsCategory']);
 
 Route::get('/user/{userId}/points', [UserController::class, 'getUserPoints']);
 Route::post('/user/{userId}/up-points', [UserController::class, 'updateUserPoints']);
@@ -40,6 +40,8 @@ Route::get('/comments/{commentId}/likes', [LikeController::class, 'likesByCommen
 Route::get('/comments/{commentId}/user-like/{userId}', [LikeController::class, 'getUserLikeForComment']);
 
 Route::get('/check-qr/{userId}/{monumentId}', [MonumentController::class, 'checkQrAndUpdatePoints']);
+
+Route::get('/todos-monumentos', [MonumentController::class, 'monumentos']);
 
 Route::get('/user/{userId}/profile', [UserController::class, 'getUserProfile']);
 
