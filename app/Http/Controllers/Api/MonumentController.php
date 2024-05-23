@@ -204,7 +204,14 @@ class MonumentController extends Controller
                 'users.profile_picture',
                 DB::raw('COUNT(likes.id) as total_likes')
             )
-            ->groupBy('comments.id', 'comments.content') // Agregar comments.content a GROUP BY
+            ->groupBy(
+                'comments.id',
+                'comments.content',
+                'comments.created_at',
+                'users.nickname',
+                'users.profile_picture',
+                'total_likes'
+            ) // Agregar comments.content a GROUP BY
             ->get();
 
         // Obtener la información de los likes de cada comentario y si el usuario ha dado "me gusta"
