@@ -210,7 +210,6 @@ class MonumentController extends Controller
                 'comments.created_at',
                 'users.nickname',
                 'users.profile_picture',
-                'total_likes'
             ) // Agregar comments.content a GROUP BY
             ->get();
 
