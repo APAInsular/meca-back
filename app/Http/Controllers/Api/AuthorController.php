@@ -26,7 +26,13 @@ class AuthorController extends Controller
     {
         $topAuthors = DB::table('authors')
             ->select(
-                'authors.*',
+                'authors.id',
+                'authors.name',
+                'authors.first_surname',
+                'authors.second_surname',
+                'authors.date_of_birth',
+                'authors.date_of_death',
+                'authors.description',
                 DB::raw('COUNT(author_monument.monument_id) AS monument_count'),
                 DB::raw('ROUND(COALESCE(AVG(ratings.rating), 0), 2) AS avg_rating')
             )
@@ -34,9 +40,17 @@ class AuthorController extends Controller
             ->leftJoin('monuments', 'author_monument.monument_id', '=', 'monuments.id')
             ->leftJoin('ratings', function ($join) {
                 $join->on('monuments.id', '=', 'ratings.rateable_id')
-                    ->where('ratings.rateable_type', '=', 'App\Models\Monument');
+                    ->where('ratings.rateable_type', '=', 'App\\Models\\Monument');
             })
-            ->groupBy('authors.id')
+            ->groupBy(
+                'authors.id',
+                'authors.name',
+                'authors.first_surname',
+                'authors.second_surname',
+                'authors.date_of_birth',
+                'authors.date_of_death',
+                'authors.description'
+            )
             ->orderBy('avg_rating', 'DESC')
             ->limit(4)
             ->get();

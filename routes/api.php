@@ -41,8 +41,6 @@ Route::get('/comments/{commentId}/user-like/{userId}', [LikeController::class, '
 
 Route::get('/check-qr/{userId}/{monumentId}', [MonumentController::class, 'checkQrAndUpdatePoints']);
 
-Route::get('/todos-monumentos', [MonumentController::class, 'monumentos']);
-
 Route::get('/user/{userId}/profile', [UserController::class, 'getUserProfile']);
 
 Route::get('/subachievement/get-all/{userId}', [SubAchievementController::class, 'getSubachievementsByKeywords']);
@@ -98,7 +96,7 @@ Route::resource('authors', App\Http\Controllers\Api\AuthorController::class)->ex
 
 // ----------------------------  CUSTOMIZE QUERYS  ----------------------------
 
-Route::get('authors/mon/{authorId}', [AuthorController::class, 'getMonumentsByAuthor']);
+Route::get('/authors/mon/{authorId}', [AuthorController::class, 'getMonumentsByAuthor']);
 
 // Ruta para obtener el usuario al que pertenece un avatar
 Route::get('/avatar/{id}/user', [AvatarController::class, 'getUserForAvatar']);
