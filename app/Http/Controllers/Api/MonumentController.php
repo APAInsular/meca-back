@@ -255,7 +255,7 @@ class MonumentController extends Controller
             'average_rating' => $monument->average_rating,
             'authors' => $authors,
             'styles' => $styles,
-            // 'comments' => $comments,
+            'comments' => $comments,
         ];
 
         return response()->json($response);
