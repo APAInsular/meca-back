@@ -148,13 +148,13 @@ class MonumentController extends Controller
                     SELECT COUNT(rating)
                     FROM ratings r
                     WHERE r.rateable_id = m.id
-                    AND r.rateable_type = "App\\Models\\Monument"
+                    AND r.rateable_type = "App/Models/Monument"
                 ) AS total_ratings'),
                 DB::raw('(
                     SELECT ROUND(COALESCE(AVG(rating), 0), 2)
                     FROM ratings r
                     WHERE r.rateable_id = m.id
-                    AND r.rateable_type = "App\\Models\\Monument"
+                    AND r.rateable_type = "App/Models/Monument"
                 ) AS average_rating')
             )
             ->get();
