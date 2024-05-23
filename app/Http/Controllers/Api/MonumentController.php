@@ -192,10 +192,10 @@ class MonumentController extends Controller
             ->join('users', 'comments.user_id', '=', 'users.id')
             ->leftJoin('likes', function ($join) {
                 $join->on('comments.id', '=', 'likes.likable_id')
-                    ->where('likes.likable_type', '=', 'App\\Models\\Comment');
+                    ->where('likes.likable_type', '=', 'App/Models/Comment');
             })
             ->where('comments.commentable_id', $monumentId)
-            ->where('comments.commentable_type', 'App\\Models\\Monument')
+            ->where('comments.commentable_type', 'App/Models/Monument')
             ->select(
                 'comments.id',
                 'comments.content',
@@ -217,13 +217,13 @@ class MonumentController extends Controller
         foreach ($comments as $comment) {
             $userLike = DB::table('likes')
                 ->where('likable_id', $comment->id)
-                ->where('likable_type', 'App\\Models\\Comment')
+                ->where('likable_type', 'App/Models/Comment')
                 ->where('user_id', $userId)
                 ->first();
 
             $comment->likes = DB::table('likes')
                 ->where('likable_id', $comment->id)
-                ->where('likable_type', 'App\\Models\\Comment')
+                ->where('likable_type', 'App/Models/Comment')
                 ->join('users', 'likes.user_id', '=', 'users.id')
                 ->select('likes.id', 'users.id as user_id', 'users.nickname', 'users.profile_picture')
                 ->get();
