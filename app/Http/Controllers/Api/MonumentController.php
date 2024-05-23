@@ -88,7 +88,14 @@ class MonumentController extends Controller
             LEFT JOIN 
                 styles s ON ms.style_id = s.id
             GROUP BY 
-                m.id
+                m.id,
+                m.title,
+                m.type,
+                m.creation_date,
+                m.main_image,
+                m.latitude,
+                m.longitude,
+                m.meaning
         ";
 
         $monuments = DB::select($query);
