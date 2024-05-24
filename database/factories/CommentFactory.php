@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\Comment;
 use App\Models\User;
 
@@ -23,8 +22,10 @@ class CommentFactory extends Factory
     {
         return [
             'content' => $this->faker->paragraphs(3, true),
-            'main_image' => $this->faker->word(),
+            'main_image' => $this->faker->imageUrl(),
             'user_id' => User::factory(),
+            'commentable_id' => $this->faker->numberBetween(1, 5),
+            'commentable_type' => 'App/Models/Monument',
         ];
     }
 }
